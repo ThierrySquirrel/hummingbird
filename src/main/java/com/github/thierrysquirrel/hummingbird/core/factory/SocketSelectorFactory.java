@@ -32,14 +32,20 @@ import java.nio.channels.Selector;
 public class SocketSelectorFactory {
     private SocketSelectorFactory() {
     }
+
     public static int select(Selector selector) throws IOException {
         return selector.select (SocketSelectorFactoryConstant.SELECT);
     }
+
     public static Selector repairSelector(Selector oldSelector) throws IOException {
         var newSelect = Selector.open ();
 
         for (SelectionKey selectionKey : oldSelector.keys ()) {
-            selectionKey.channel ().register (newSelect, selectionKey.interestOps ());
+            if (!oldSelector.isOpen () || !selectionKey.isValid ()) {
+                continue;
+            }
+            int interestOps = selectionKey.interestOps ();
+            selectionKey.channel ().register (newSelect, interestOps);
         }
         return newSelect;
     }

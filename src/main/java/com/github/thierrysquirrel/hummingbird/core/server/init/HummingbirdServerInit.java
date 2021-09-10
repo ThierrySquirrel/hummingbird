@@ -17,6 +17,9 @@ package com.github.thierrysquirrel.hummingbird.core.server.init;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
+import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
+import com.github.thierrysquirrel.hummingbird.core.domain.builder.HummingbirdDomainBuilder;
 import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import com.github.thierrysquirrel.hummingbird.core.factory.SocketAddressFactory;
 import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
@@ -43,8 +46,10 @@ public class HummingbirdServerInit {
     public static <T> void init(String url, long readHeartbeatTime, long writeHeartbeatTime,
                                 HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler) throws IOException {
         ServerSocketChannel serverSocketChannel = ServerSocketChannelFactory.bind (SocketAddressFactory.getInetSocketAddress (url));
-        ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache=new ChannelHeartbeatDomainCache<> (hummingbirdHandler,readHeartbeatTime,writeHeartbeatTime);
+        ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache = new ChannelHeartbeatDomainCache<> (hummingbirdHandler, readHeartbeatTime, writeHeartbeatTime);
         ChannelHeartbeatExecution.channelHeartbeat (channelHeartbeatDomainCache);
-        HummingbirdServerInitFactory.init (serverSocketChannel,hummingbirdDecoder,hummingbirdEncoder,hummingbirdHandler,channelHeartbeatDomainCache);
+        HummingbirdDecoderCache<T> hummingbirdDecoderCache = new HummingbirdDecoderCache<> ();
+        HummingbirdDomain<T> hummingbirdDomain = HummingbirdDomainBuilder.builderHummingbirdDomain (hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache);
+        HummingbirdServerInitFactory.init (serverSocketChannel, hummingbirdDomain);
     }
 }

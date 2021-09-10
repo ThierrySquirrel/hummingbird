@@ -17,6 +17,8 @@ package com.github.thierrysquirrel.hummingbird.core.factory;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
+import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
@@ -27,7 +29,12 @@ import com.github.thierrysquirrel.hummingbird.core.server.factory.constant.Serve
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Classname: SocketSelectorKeysFactory
@@ -42,42 +49,48 @@ public class SocketSelectorKeysFactory {
     private SocketSelectorKeysFactory() {
     }
 
-    public static <T> void isReadable(SocketChannel socketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) throws IOException {
-        SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade (hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, socketChannel);
+    public static SelectionKey getSelectionKey(Iterator<SelectionKey> selectionKeyIterator) {
+        SelectionKey selectionKey = selectionKeyIterator.next ();
+        selectionKeyIterator.remove ();
+        if (!selectionKey.isValid ()) {
+            return null;
+        }
+        return selectionKey;
+    }
+
+    public static <T> void isReadable(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain) throws IOException {
+        SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade (hummingbirdDomain.getHummingbirdEncoder (), hummingbirdDomain.getHummingbirdHandler (), hummingbirdDomain.getChannelHeartbeatDomainCache (), hummingbirdDomain.getHummingbirdDecoderCache (), socketChannel);
 
         int readOffsetInit = ServerSocketSelectorKeysFactoryConstant.READ_OFFSET_INIT;
         int readOffset = readOffsetInit;
 
-        ByteBufferFacade byteBufferFacade = ByteBufferFacadeChannelReadCache.getByteBufferFacade ();
+        ByteBufferFacade byteBufferFacade = ByteBufferFacadeChannelReadCache.getByteBufferFacade (socketChannel.toString ());
         while (readOffset == readOffsetInit || readOffset > 0) {
             try {
-                channelHeartbeatDomainCache.readHeartbeat (socketChannelFacade);
+                hummingbirdDomain.getChannelHeartbeatDomainCache ().readHeartbeat (socketChannelFacade);
                 readOffset = socketChannel.read (byteBufferFacade.getByteBuffer ());
-                read (hummingbirdDecoder, hummingbirdHandler, socketChannelFacade, byteBufferFacade);
+                boolean expansion = byteBufferFacade.isExpansion ();
+                read (hummingbirdDomain.getHummingbirdDecoder (), hummingbirdDomain.getHummingbirdHandler (), socketChannelFacade, byteBufferFacade);
+                byteBufferFacade.tryExpansion (expansion);
             } catch (IOException e) {
                 log.error ("read Error", e);
                 break;
             }
         }
         if (readOffset < 0) {
-            close (socketChannelFacade, byteBufferFacade);
+            socketChannelFacade.close ();
         }
     }
 
     private static <T> void read(HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdHandler<T> hummingbirdHandler, SocketChannelFacade<T> socketChannelFacade, ByteBufferFacade byteBufferFacade) {
         byteBufferFacade.flip ();
         while (byteBufferFacade.readComplete ()) {
-            T message = hummingbirdDecoder.decoder (byteBufferFacade);
+            T message = hummingbirdDecoder.decoder (byteBufferFacade, socketChannelFacade);
             if (message == null) {
                 break;
             }
             hummingbirdHandler.channelMessage (socketChannelFacade, message);
         }
-        byteBufferFacade.reclaim ();
     }
 
-    private static <T> void close(SocketChannelFacade<T> socketChannelFacade, ByteBufferFacade byteBufferFacade) {
-        socketChannelFacade.close ();
-        byteBufferFacade.clear ();
-    }
 }

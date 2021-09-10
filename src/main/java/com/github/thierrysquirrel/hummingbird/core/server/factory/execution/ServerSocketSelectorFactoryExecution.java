@@ -15,12 +15,9 @@
  */
 package com.github.thierrysquirrel.hummingbird.core.server.factory.execution;
 
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.factory.SocketSelectorFactory;
 import com.github.thierrysquirrel.hummingbird.core.factory.constant.SocketSelectorFactoryConstant;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 import com.github.thierrysquirrel.hummingbird.core.server.factory.ServerSocketSelectorFactory;
 
 import java.io.IOException;
@@ -41,14 +38,14 @@ public class ServerSocketSelectorFactoryExecution {
     private ServerSocketSelectorFactoryExecution() {
     }
 
-    public static <T> void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) throws IOException {
+    public static <T> void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) throws IOException {
         Selector selector = ServerSocketSelectorFactory.registerAcceptSelector (serverSocketChannel);
         int selectOffset = 0;
         while (isRun) {
             int select = SocketSelectorFactory.select (selector);
             if (select > 0) {
                 selectOffset = 0;
-                ServerSocketSelectorKeysFactoryExecution.serverSocketSelectorKeys (serverSocketChannel,hummingbirdDecoder,hummingbirdEncoder,hummingbirdHandler,channelHeartbeatDomainCache,selector);
+                ServerSocketSelectorKeysFactoryExecution.serverSocketSelectorKeys (serverSocketChannel, hummingbirdDomain, selector);
 
             } else {
                 selectOffset++;

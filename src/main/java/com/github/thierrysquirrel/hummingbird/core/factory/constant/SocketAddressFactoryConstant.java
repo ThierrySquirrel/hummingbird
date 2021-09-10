@@ -26,6 +26,7 @@ package com.github.thierrysquirrel.hummingbird.core.factory.constant;
 public final class SocketAddressFactoryConstant {
     public static final String SEPARATOR = ":";
     public static final String URL_SEPARATOR = ",";
+
     private SocketAddressFactoryConstant() {
     }
 

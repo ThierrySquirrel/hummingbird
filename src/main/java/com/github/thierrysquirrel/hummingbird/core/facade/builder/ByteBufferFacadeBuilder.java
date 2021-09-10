@@ -16,7 +16,7 @@
 package com.github.thierrysquirrel.hummingbird.core.facade.builder;
 
 import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
-import com.github.thierrysquirrel.hummingbird.core.facade.constant.ByteBufferFacadeBuilderConstant;
+import com.github.thierrysquirrel.hummingbird.core.facade.constant.ByteBufferFacadeConstant;
 
 import java.nio.ByteBuffer;
 
@@ -33,8 +33,8 @@ public class ByteBufferFacadeBuilder {
     }
 
     public static ByteBufferFacade builderByteBufferFacade() {
-        ByteBufferFacade byteBufferFacade=new ByteBufferFacade ();
-        byteBufferFacade.setByteBuffer (ByteBuffer.allocateDirect (ByteBufferFacadeBuilderConstant.INIT_SIZE));
+        ByteBufferFacade byteBufferFacade = new ByteBufferFacade ();
+        byteBufferFacade.setByteBuffer (ByteBuffer.allocateDirect (ByteBufferFacadeConstant.INIT_SIZE));
         return byteBufferFacade;
     }
 }

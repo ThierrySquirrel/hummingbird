@@ -48,6 +48,7 @@ public interface HummingbirdHandler<T> {
      * channelClose
      *
      * @param remoteAddress remoteAddress
+     * @param localAddress  localAddress
      */
-    void channelClose(SocketAddress remoteAddress);
+    void channelClose(SocketAddress remoteAddress, SocketAddress localAddress);
 }

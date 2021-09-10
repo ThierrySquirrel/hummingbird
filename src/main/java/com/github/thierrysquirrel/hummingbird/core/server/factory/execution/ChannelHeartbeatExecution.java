@@ -33,8 +33,9 @@ import java.util.concurrent.TimeUnit;
 public class ChannelHeartbeatExecution {
     private ChannelHeartbeatExecution() {
     }
-    public static <T> void channelHeartbeat(ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache){
-        ChannelHeartbeatThreadExecute<T> channelHeartbeatThreadExecute=new ChannelHeartbeatThreadExecute<> (channelHeartbeatDomainCache);
-        ThreadPoolExecutorConstant.CHANNEL_HEARTBEAT.scheduleWithFixedDelay (channelHeartbeatThreadExecute,0, ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_DELAY, TimeUnit.MILLISECONDS);
+
+    public static <T> void channelHeartbeat(ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
+        ChannelHeartbeatThreadExecute<T> channelHeartbeatThreadExecute = new ChannelHeartbeatThreadExecute<> (channelHeartbeatDomainCache);
+        ThreadPoolExecutorConstant.CHANNEL_HEARTBEAT.scheduleWithFixedDelay (channelHeartbeatThreadExecute, 0, ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_DELAY, TimeUnit.MILLISECONDS);
     }
 }

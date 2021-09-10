@@ -15,11 +15,13 @@
  */
 package com.github.thierrysquirrel.hummingbird.core.client.init.builder;
 
-import com.github.thierrysquirrel.hummingbird.core.client.domain.HummingbirdClientDomain;
-import com.github.thierrysquirrel.hummingbird.core.client.domain.builder.HummingbirdClientDomainBuilder;
 import com.github.thierrysquirrel.hummingbird.core.client.init.HummingbirdClientInit;
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
+import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
+import com.github.thierrysquirrel.hummingbird.core.domain.builder.HummingbirdDomainBuilder;
+import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 
 import java.util.concurrent.ThreadPoolExecutor;
@@ -37,9 +39,14 @@ public class HummingbirdClientInitBuilder {
     }
 
     public static <T> HummingbirdClientInit<T> builderHummingbirdClientInit(ThreadPoolExecutor hummingbirdClientThreadPool, String url, long readHeartbeatTime, long writeHeartbeatTime, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler) {
-        HummingbirdClientDomain<T> hummingbirdClientDomain = HummingbirdClientDomainBuilder.builderHummingbirdClientDomain (hummingbirdClientThreadPool, url, readHeartbeatTime, writeHeartbeatTime, hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler);
+        ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache = new ChannelHeartbeatDomainCache<> (hummingbirdHandler, readHeartbeatTime, writeHeartbeatTime);
+        HummingbirdDecoderCache<T> hummingbirdDecoderCache = new HummingbirdDecoderCache<> ();
+        HummingbirdDomain<T> hummingbirdDomain = HummingbirdDomainBuilder.builderHummingbirdDomain (hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache);
+
         HummingbirdClientInit<T> hummingbirdClientInit = new HummingbirdClientInit<> ();
-        hummingbirdClientInit.setHummingbirdClientDomain (hummingbirdClientDomain);
+        hummingbirdClientInit.setHummingbirdClientThreadPool (hummingbirdClientThreadPool);
+        hummingbirdClientInit.setUrl (url);
+        hummingbirdClientInit.setHummingbirdDomain (hummingbirdDomain);
         return hummingbirdClientInit;
     }
 }

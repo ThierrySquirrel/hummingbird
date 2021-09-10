@@ -31,6 +31,7 @@ import java.nio.channels.ServerSocketChannel;
 public class ServerSocketSelectorFactory {
     private ServerSocketSelectorFactory() {
     }
+
     public static Selector registerAcceptSelector(ServerSocketChannel serverSocketChannel) throws IOException {
         var selector = Selector.open ();
         serverSocketChannel.register (selector, SelectionKey.OP_ACCEPT);

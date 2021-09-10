@@ -13,30 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.thierrysquirrel.hummingbird.core.client.domain;
+package com.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.server;
 
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
-import lombok.Data;
-
-import java.util.concurrent.ThreadPoolExecutor;
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.factory.HttpEncoderFactory;
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRequestContext;
+import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 
 /**
- * Classname: HummingbirdClientDomain
+ * Classname: HttpServerEncoder
  * Description:
- * Date: 2021/7/30 12:20
+ * Date: 2021/9/10 18:01
  *
  * @author ThierrySquirrel
  * @since JDK 11
  */
-@Data
-public class HummingbirdClientDomain<T> {
-    private ThreadPoolExecutor hummingbirdClientThreadPool;
-    private String url;
-    private long readHeartbeatTime;
-    private long writeHeartbeatTime;
-    private HummingbirdDecoder<T> hummingbirdDecoder;
-    private HummingbirdEncoder<T> hummingbirdEncoder;
-    private HummingbirdHandler<T> hummingbirdHandler;
+public class HttpServerEncoder implements HummingbirdEncoder<HttpRequestContext> {
+    @Override
+    public void encoder(HttpRequestContext message, ByteBufferFacade byteBufferFacade) {
+        HttpEncoderFactory.encoderHttpResponse (byteBufferFacade, message);
+        HttpEncoderFactory.encoderHttpHeaderAndHttpBody (byteBufferFacade, message);
+    }
 }

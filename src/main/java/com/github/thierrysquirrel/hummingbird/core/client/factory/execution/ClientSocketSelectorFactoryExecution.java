@@ -16,13 +16,10 @@
 package com.github.thierrysquirrel.hummingbird.core.client.factory.execution;
 
 import com.github.thierrysquirrel.hummingbird.core.client.factory.ClientSocketSelectorFactory;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import com.github.thierrysquirrel.hummingbird.core.factory.SocketSelectorFactory;
 import com.github.thierrysquirrel.hummingbird.core.factory.constant.SocketSelectorFactoryConstant;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 
 import java.io.IOException;
 import java.nio.channels.Selector;
@@ -41,25 +38,23 @@ public class ClientSocketSelectorFactoryExecution {
     private ClientSocketSelectorFactoryExecution() {
     }
 
-    public static <T> void clientSocketSelector(SocketChannel socketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder,
-                                                HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
+    public static <T> void clientSocketSelector(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
 
         Selector selector = ClientSocketSelectorFactory.registerConnectSelector (socketChannel);
         int selectOffset = 0;
         while (true) {
             int select = SocketSelectorFactory.select (selector);
-
             if (!socketChannel.isOpen ()) {
                 break;
             }
-            channelHeartbeatDomainCache.heartbeat ();
+            hummingbirdDomain.getChannelHeartbeatDomainCache ().heartbeat ();
 
-            if(select>0){
-                selectOffset=0;
-                ClientSocketSelectorKeysFactoryExecution.clientSocketSelectorKeys (socketChannel,hummingbirdDecoder,hummingbirdEncoder,hummingbirdHandler,channelHeartbeatDomainCache,socketChannelFacadeCompletableFuture,selector);
-            }else {
+            if (select > 0) {
+                selectOffset = 0;
+                ClientSocketSelectorKeysFactoryExecution.clientSocketSelectorKeys (socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture, selector);
+            } else {
                 selectOffset++;
-                if(selectOffset> SocketSelectorFactoryConstant.SELECT_OFFSET_MAX){
+                if (selectOffset > SocketSelectorFactoryConstant.SELECT_OFFSET_MAX) {
                     selector = SocketSelectorFactory.repairSelector (selector);
                     selectOffset = 0;
                 }

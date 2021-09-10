@@ -15,10 +15,7 @@
  */
 package com.github.thierrysquirrel.hummingbird.core.server.init.factory;
 
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.server.factory.execution.ServerSocketSelectorExecution;
 import com.github.thierrysquirrel.hummingbird.core.server.init.factory.constant.HummingbirdServerInitFactoryConstant;
 
@@ -36,10 +33,9 @@ public class HummingbirdServerInitFactory {
     private HummingbirdServerInitFactory() {
     }
 
-    public static <T> void init(ServerSocketChannel serverSocketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder,
-                                HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
+    public static <T> void init(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) {
         for (int i = 0; i < HummingbirdServerInitFactoryConstant.THREADS_NUMBER; i++) {
-            ServerSocketSelectorExecution.serverSocketSelector (serverSocketChannel, hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache);
+            ServerSocketSelectorExecution.serverSocketSelector (serverSocketChannel, hummingbirdDomain);
         }
     }
 }

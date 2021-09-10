@@ -35,7 +35,11 @@ public class ByteBufferFacadeChannelReadCache {
     private ByteBufferFacadeChannelReadCache() {
     }
 
-    public static ByteBufferFacade getByteBufferFacade() {
-        return CHANNEL_READ_CACHE.computeIfAbsent (Thread.currentThread ().getName (), key -> ByteBufferFacadeBuilder.builderByteBufferFacade ());
+    public static ByteBufferFacade getByteBufferFacade(String socketChannelString) {
+        return CHANNEL_READ_CACHE.computeIfAbsent (socketChannelString, key -> ByteBufferFacadeBuilder.builderByteBufferFacade ());
+    }
+
+    public static void removeByteBufferFacade(String socketChannelString) {
+        CHANNEL_READ_CACHE.remove (socketChannelString);
     }
 }

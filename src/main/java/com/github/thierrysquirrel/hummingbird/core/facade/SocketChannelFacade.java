@@ -16,7 +16,10 @@
 package com.github.thierrysquirrel.hummingbird.core.facade;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
+import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
+import com.github.thierrysquirrel.hummingbird.core.container.SocketWriteStateContainer;
 import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import com.github.thierrysquirrel.hummingbird.core.facade.cache.ByteBufferFacadeChannelReadCache;
 import com.github.thierrysquirrel.hummingbird.core.facade.cache.ByteBufferFacadeChannelWriteCache;
 import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 import lombok.Data;
@@ -40,15 +43,20 @@ public class SocketChannelFacade<T> {
     private HummingbirdEncoder<T> hummingbirdEncoder;
     private HummingbirdHandler<T> hummingbirdHandler;
     private ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache;
+    private HummingbirdDecoderCache<T> hummingbirdDecoderCache;
     private SocketChannel socketChannel;
     private SocketAddress remoteAddress;
+    private SocketAddress localAddress;
 
     public void sendMessage(T message) throws IOException {
         if (!isOpen ()) {
             return;
         }
         channelHeartbeatDomainCache.writeHeartbeat (this);
-        ByteBufferFacade byteBufferFacade = ByteBufferFacadeChannelWriteCache.getByteBufferFacade ();
+        String socketChannelString = socketChannel.toString ();
+        SocketWriteStateContainer.writing (socketChannelString);
+
+        ByteBufferFacade byteBufferFacade = ByteBufferFacadeChannelWriteCache.getByteBufferFacade (socketChannelString);
         hummingbirdEncoder.encoder (message, byteBufferFacade);
         byteBufferFacade.flip ();
         while (true) {
@@ -59,17 +67,23 @@ public class SocketChannelFacade<T> {
                 byteBufferFacade.clear ();
                 throw e;
             }
-            if (write > 0) {
+            if (write > 0 && byteBufferFacade.length () == 0) {
                 break;
             }
         }
         byteBufferFacade.clear ();
+        SocketWriteStateContainer.finished (socketChannelString);
+
     }
 
     public void close() {
-        String remoteAddressString = remoteAddress.toString ();
-        channelHeartbeatDomainCache.remove (remoteAddressString);
-        hummingbirdHandler.channelClose (remoteAddress);
+        String socketChannelString = socketChannel.toString ();
+        channelHeartbeatDomainCache.remove (socketChannelString);
+        hummingbirdDecoderCache.remove (socketChannelString);
+        ByteBufferFacadeChannelReadCache.removeByteBufferFacade (socketChannelString);
+        ByteBufferFacadeChannelWriteCache.removeByteBufferFacade (socketChannelString);
+        SocketWriteStateContainer.removeCache (socketChannelString);
+        hummingbirdHandler.channelClose (remoteAddress, localAddress);
         if (isOpen ()) {
             try {
                 socketChannel.close ();
@@ -79,6 +93,17 @@ public class SocketChannelFacade<T> {
         }
     }
 
+    public void putMessageDecoderCache(T messageDecoderCache) {
+        hummingbirdDecoderCache.putMessageDecoderCache (socketChannel.toString (), messageDecoderCache);
+    }
+
+    public T getMessageDecoderCache() {
+        return hummingbirdDecoderCache.getMessageDecoderCache (socketChannel.toString ());
+    }
+
+    public void removeMessageDecoderCache() {
+        hummingbirdDecoderCache.remove (socketChannel.toString ());
+    }
 
     public boolean isOpen() {
         return socketChannel.isOpen ();

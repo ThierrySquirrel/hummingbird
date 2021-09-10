@@ -17,6 +17,8 @@ package com.github.thierrysquirrel.hummingbird.core.client.thread;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
+import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
@@ -39,18 +41,12 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public abstract class AbstractClientSocketSelectorThread<T> implements Runnable {
     private SocketChannel socketChannel;
-    private HummingbirdDecoder<T> hummingbirdDecoder;
-    private HummingbirdEncoder<T> hummingbirdEncoder;
-    private HummingbirdHandler<T> hummingbirdHandler;
-    private ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache;
+    private HummingbirdDomain<T> hummingbirdDomain;
     private CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture;
 
-    protected AbstractClientSocketSelectorThread(SocketChannel socketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
+    protected AbstractClientSocketSelectorThread(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
         this.socketChannel = socketChannel;
-        this.hummingbirdDecoder = hummingbirdDecoder;
-        this.hummingbirdEncoder = hummingbirdEncoder;
-        this.hummingbirdHandler = hummingbirdHandler;
-        this.channelHeartbeatDomainCache = channelHeartbeatDomainCache;
+        this.hummingbirdDomain = hummingbirdDomain;
         this.socketChannelFacadeCompletableFuture = socketChannelFacadeCompletableFuture;
     }
 
@@ -58,20 +54,16 @@ public abstract class AbstractClientSocketSelectorThread<T> implements Runnable 
      * clientSocketSelector
      *
      * @param socketChannel                        socketChannel
-     * @param hummingbirdDecoder                   hummingbirdDecoder
-     * @param hummingbirdEncoder                   hummingbirdEncoder
-     * @param hummingbirdHandler                   hummingbirdHandler
-     * @param channelHeartbeatDomainCache          channelHeartbeatDomainCache
+     * @param hummingbirdDomain                    hummingbirdDomain
      * @param socketChannelFacadeCompletableFuture socketChannelFacadeCompletableFuture
      * @throws IOException IOException
      */
-    protected abstract void clientSocketSelector(SocketChannel socketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException;
+    protected abstract void clientSocketSelector(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException;
 
     @Override
     public void run() {
         try {
-            clientSocketSelector (this.socketChannel, this.hummingbirdDecoder, this.hummingbirdEncoder,
-                    this.hummingbirdHandler, this.channelHeartbeatDomainCache, this.socketChannelFacadeCompletableFuture);
+            clientSocketSelector (this.socketChannel, hummingbirdDomain, this.socketChannelFacadeCompletableFuture);
         } catch (Exception e) {
             log.error ("clientSocketSelector Error", e);
         }

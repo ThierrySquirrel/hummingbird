@@ -17,6 +17,8 @@ package com.github.thierrysquirrel.hummingbird.core.server.thread;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
+import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 import lombok.Data;
@@ -38,36 +40,26 @@ import java.nio.channels.ServerSocketChannel;
 public abstract class AbstractServerSocketSelectorThread<T> implements Runnable {
 
     private ServerSocketChannel serverSocketChannel;
-    private HummingbirdDecoder<T> hummingbirdDecoder;
-    private HummingbirdEncoder<T> hummingbirdEncoder;
-    private HummingbirdHandler<T> hummingbirdHandler;
-    private ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache;
+    private HummingbirdDomain<T> hummingbirdDomain;
 
-    protected AbstractServerSocketSelectorThread(ServerSocketChannel serverSocketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
+    protected AbstractServerSocketSelectorThread(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) {
         this.serverSocketChannel = serverSocketChannel;
-        this.hummingbirdDecoder = hummingbirdDecoder;
-        this.hummingbirdEncoder = hummingbirdEncoder;
-        this.hummingbirdHandler = hummingbirdHandler;
-        this.channelHeartbeatDomainCache = channelHeartbeatDomainCache;
+        this.hummingbirdDomain = hummingbirdDomain;
     }
 
     /**
      * serverSocketSelector
      *
-     * @param serverSocketChannel         serverSocketChannel
-     * @param hummingbirdDecoder          hummingbirdDecoder
-     * @param hummingbirdEncoder          hummingbirdEncoder
-     * @param hummingbirdHandler          hummingbirdHandler
-     * @param channelHeartbeatDomainCache channelHeartbeatDomainCache
+     * @param serverSocketChannel serverSocketChannel
+     * @param hummingbirdDomain   hummingbirdDomain
      * @throws IOException IOException
      */
-    protected abstract void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) throws IOException;
+    protected abstract void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) throws IOException;
 
     @Override
     public void run() {
         try {
-            serverSocketSelector (this.serverSocketChannel, this.hummingbirdDecoder, this.hummingbirdEncoder,
-                    this.hummingbirdHandler, this.channelHeartbeatDomainCache);
+            serverSocketSelector (this.serverSocketChannel, this.hummingbirdDomain);
         } catch (Exception e) {
             log.error ("serverSocketSelector Error", e);
         }

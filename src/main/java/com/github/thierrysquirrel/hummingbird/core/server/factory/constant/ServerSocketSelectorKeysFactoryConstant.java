@@ -24,7 +24,8 @@ package com.github.thierrysquirrel.hummingbird.core.server.factory.constant;
  * @since JDK 11
  */
 public final class ServerSocketSelectorKeysFactoryConstant {
-    public static final int READ_OFFSET_INIT=-2;
+    public static final int READ_OFFSET_INIT = -2;
+
     private ServerSocketSelectorKeysFactoryConstant() {
     }
 }

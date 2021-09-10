@@ -17,11 +17,8 @@ package com.github.thierrysquirrel.hummingbird.core.client.thread.execute;
 
 import com.github.thierrysquirrel.hummingbird.core.client.factory.execution.ClientSocketSelectorFactoryExecution;
 import com.github.thierrysquirrel.hummingbird.core.client.thread.AbstractClientSocketSelectorThread;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
@@ -36,12 +33,12 @@ import java.util.concurrent.CompletableFuture;
  * @since JDK 11
  */
 public class ClientSocketSelectorThreadExecute<T> extends AbstractClientSocketSelectorThread<T> {
-    public ClientSocketSelectorThreadExecute(SocketChannel socketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
-        super (socketChannel, hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache,socketChannelFacadeCompletableFuture);
+    public ClientSocketSelectorThreadExecute(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
+        super (socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
     }
 
     @Override
-    protected void clientSocketSelector(SocketChannel socketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache,CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
-        ClientSocketSelectorFactoryExecution.clientSocketSelector (socketChannel, hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache,socketChannelFacadeCompletableFuture);
+    protected void clientSocketSelector(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
+        ClientSocketSelectorFactoryExecution.clientSocketSelector (socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
     }
 }

@@ -16,10 +16,7 @@
 package com.github.thierrysquirrel.hummingbird.core.server.factory.execution;
 
 import com.github.thierrysquirrel.hummingbird.core.builder.constant.ThreadPoolExecutorConstant;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.server.thread.execute.ServerSocketSelectorThreadExecute;
 
 import java.nio.channels.ServerSocketChannel;
@@ -36,9 +33,8 @@ public class ServerSocketSelectorExecution {
     private ServerSocketSelectorExecution() {
     }
 
-    public static <T> void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder,
-                                                HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
-        ServerSocketSelectorThreadExecute<T> serverSocketSelectorThreadExecute = new ServerSocketSelectorThreadExecute<> (serverSocketChannel, hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache);
+    public static <T> void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) {
+        ServerSocketSelectorThreadExecute<T> serverSocketSelectorThreadExecute = new ServerSocketSelectorThreadExecute<> (serverSocketChannel, hummingbirdDomain);
         ThreadPoolExecutorConstant.HUMMINGBIRD_SERVER.execute (serverSocketSelectorThreadExecute);
 
     }

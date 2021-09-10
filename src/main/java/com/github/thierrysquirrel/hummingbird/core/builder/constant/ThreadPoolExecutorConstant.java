@@ -30,7 +30,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public final class ThreadPoolExecutorConstant {
     public static final ScheduledThreadPoolExecutor CHANNEL_HEARTBEAT = ThreadPoolExecutorBuilder.builderChannelHeartbeatThreadPoolExecutor ();
-    public static final ThreadPoolExecutor HUMMINGBIRD_SERVER=ThreadPoolExecutorBuilder.builderHummingbirdServerThreadPoolExecutor ();
+    public static final ThreadPoolExecutor HUMMINGBIRD_SERVER = ThreadPoolExecutorBuilder.builderHummingbirdServerThreadPoolExecutor ();
+
     private ThreadPoolExecutorConstant() {
     }
 }

@@ -15,10 +15,7 @@
  */
 package com.github.thierrysquirrel.hummingbird.core.server.thread.execute;
 
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.server.factory.execution.ServerSocketSelectorFactoryExecution;
 import com.github.thierrysquirrel.hummingbird.core.server.thread.AbstractServerSocketSelectorThread;
 
@@ -34,13 +31,13 @@ import java.nio.channels.ServerSocketChannel;
  * @since JDK 11
  */
 public class ServerSocketSelectorThreadExecute<T> extends AbstractServerSocketSelectorThread<T> {
-    public ServerSocketSelectorThreadExecute(ServerSocketChannel serverSocketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
-        super (serverSocketChannel, hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache);
+
+    public ServerSocketSelectorThreadExecute(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) {
+        super (serverSocketChannel, hummingbirdDomain);
     }
 
     @Override
-    protected void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) throws IOException {
-        ServerSocketSelectorFactoryExecution.serverSocketSelector (serverSocketChannel, hummingbirdDecoder, hummingbirdEncoder,
-                hummingbirdHandler, channelHeartbeatDomainCache);
+    protected void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) throws IOException {
+        ServerSocketSelectorFactoryExecution.serverSocketSelector (serverSocketChannel, hummingbirdDomain);
     }
 }

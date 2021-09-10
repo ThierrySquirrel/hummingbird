@@ -15,19 +15,18 @@
  */
 package com.github.thierrysquirrel.hummingbird.core.client.init;
 
-import com.github.thierrysquirrel.hummingbird.core.client.domain.HummingbirdClientDomain;
 import com.github.thierrysquirrel.hummingbird.core.client.factory.ClientSocketChannelFactory;
 import com.github.thierrysquirrel.hummingbird.core.client.factory.execution.ClientSocketSelectorExecution;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import com.github.thierrysquirrel.hummingbird.core.factory.SocketAddressFactory;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 import lombok.Data;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Classname: HummingbirdClientInit
@@ -39,17 +38,16 @@ import java.util.concurrent.ExecutionException;
  */
 @Data
 public class HummingbirdClientInit<T> {
-    private HummingbirdClientDomain<T> hummingbirdClientDomain;
+    private ThreadPoolExecutor hummingbirdClientThreadPool;
+    private String url;
+    private HummingbirdDomain<T> hummingbirdDomain;
     private CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture;
 
     public SocketChannelFacade<T> connect() throws ExecutionException, InterruptedException, IOException {
         socketChannelFacadeCompletableFuture = new CompletableFuture<> ();
-        SocketChannel socketChannel = ClientSocketChannelFactory.connect (SocketAddressFactory.getInetSocketAddress (hummingbirdClientDomain.getUrl ()));
+        SocketChannel socketChannel = ClientSocketChannelFactory.connect (SocketAddressFactory.getInetSocketAddress (url));
 
-        HummingbirdHandler<T> hummingbirdHandler = hummingbirdClientDomain.getHummingbirdHandler ();
-        ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache = new ChannelHeartbeatDomainCache<> (hummingbirdHandler, hummingbirdClientDomain.getReadHeartbeatTime (), hummingbirdClientDomain.getWriteHeartbeatTime ());
-        ClientSocketSelectorExecution.clientSocketSelector (hummingbirdClientDomain.getHummingbirdClientThreadPool (), socketChannel, hummingbirdClientDomain.getHummingbirdDecoder (),
-                hummingbirdClientDomain.getHummingbirdEncoder (), hummingbirdHandler,channelHeartbeatDomainCache,socketChannelFacadeCompletableFuture);
+        ClientSocketSelectorExecution.clientSocketSelector (hummingbirdClientThreadPool, socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
         return socketChannelFacadeCompletableFuture.get ();
     }
 }

@@ -16,11 +16,8 @@
 package com.github.thierrysquirrel.hummingbird.core.client.factory.execution;
 
 import com.github.thierrysquirrel.hummingbird.core.client.thread.execute.ClientSocketSelectorThreadExecute;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
@@ -38,9 +35,8 @@ public class ClientSocketSelectorExecution {
     private ClientSocketSelectorExecution() {
     }
 
-    public static <T> void clientSocketSelector(ThreadPoolExecutor hummingbirdClientThreadPool, SocketChannel socketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder,
-                                                HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
-        ClientSocketSelectorThreadExecute<T> clientSocketSelectorThreadExecute = new ClientSocketSelectorThreadExecute<> (socketChannel, hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache,socketChannelFacadeCompletableFuture);
+    public static <T> void clientSocketSelector(ThreadPoolExecutor hummingbirdClientThreadPool, SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
+        ClientSocketSelectorThreadExecute<T> clientSocketSelectorThreadExecute = new ClientSocketSelectorThreadExecute<> (socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
         hummingbirdClientThreadPool.execute (clientSocketSelectorThreadExecute);
     }
 }

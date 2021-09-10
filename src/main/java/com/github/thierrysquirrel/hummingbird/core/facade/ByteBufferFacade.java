@@ -15,6 +15,7 @@
  */
 package com.github.thierrysquirrel.hummingbird.core.facade;
 
+import com.github.thierrysquirrel.hummingbird.core.facade.constant.ByteBufferFacadeConstant;
 import lombok.Data;
 
 import java.nio.ByteBuffer;
@@ -39,9 +40,7 @@ public class ByteBufferFacade {
     }
 
     public int length() {
-        int position = byteBuffer.position ();
-        int limit = byteBuffer.limit ();
-        return limit - position;
+        return length (byteBuffer);
     }
 
     public void flip() {
@@ -55,10 +54,29 @@ public class ByteBufferFacade {
             byteBuffer.clear ();
             return;
         }
-        byte[] cache = new byte[length];
-        byteBuffer.get (cache);
-        byteBuffer.clear ();
-        byteBuffer.put (cache);
+        reallocateCapacity (byteBuffer.capacity ());
+    }
+
+    public boolean isExpansion() {
+        int capacity = byteBuffer.capacity ();
+        double expansionThreshold = capacity * ByteBufferFacadeConstant.EXPANSION_THRESHOLD;
+        int position = byteBuffer.position ();
+        if (position < expansionThreshold) {
+            return Boolean.FALSE;
+        }
+        int newSize = capacity * ByteBufferFacadeConstant.EXPANSION_SIZE;
+        if (newSize > ByteBufferFacadeConstant.MAX_SIZE) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+    public void tryExpansion(boolean expansion) {
+        if (expansion) {
+            expansion ();
+        } else {
+            reclaim ();
+        }
     }
 
     public void clear() {
@@ -78,35 +96,97 @@ public class ByteBufferFacade {
         setMakePosition (-1);
     }
 
+    private void automaticExpansion() {
+        if (isExpansion ()) {
+            byteBuffer.flip ();
+            expansion ();
+        }
+    }
+
+    private void cyclicExpansion(int valueSize) {
+        while (valueSize > length ()) {
+            byteBuffer.flip ();
+            expansion ();
+        }
+    }
+
+    private void expansion() {
+        int capacity = byteBuffer.capacity ();
+        int newSize = capacity * ByteBufferFacadeConstant.EXPANSION_SIZE;
+        reallocateCapacity (newSize);
+    }
+
+    private void reallocateCapacity(int capacity) {
+        ByteBuffer newBytebuffer = ByteBuffer.allocateDirect (capacity);
+        newBytebuffer.put (byteBuffer);
+        byteBuffer = newBytebuffer;
+    }
+
+    private int length(ByteBuffer value) {
+        int position = value.position ();
+        int limit = value.limit ();
+        return limit - position;
+    }
+
+    public void put(ByteBuffer value) {
+        int valueSize = length (value);
+        cyclicExpansion (valueSize);
+        byteBuffer.put (value);
+    }
+
+    public boolean tryGet(ByteBuffer value) {
+        int valueSize = length (value);
+        int length = length ();
+        if (valueSize > length) {
+            value.put (byteBuffer);
+            return Boolean.FALSE;
+        } else {
+            int makeLimit = byteBuffer.limit ();
+            int readSize = valueSize + byteBuffer.position ();
+            byteBuffer.limit (readSize);
+            value.put (byteBuffer);
+            byteBuffer.limit (makeLimit);
+            return Boolean.TRUE;
+        }
+    }
+
     public void putBytes(byte[] value) {
+        cyclicExpansion (value.length);
         byteBuffer.put (value);
     }
 
     public void putByte(byte value) {
+        automaticExpansion ();
         byteBuffer.put (value);
     }
 
     public void putShort(short value) {
+        automaticExpansion ();
         byteBuffer.putShort (value);
     }
 
     public void putInt(int value) {
+        automaticExpansion ();
         byteBuffer.putInt (value);
     }
 
     public void putLong(long value) {
+        automaticExpansion ();
         byteBuffer.putLong (value);
     }
 
     public void putFloat(float value) {
+        automaticExpansion ();
         byteBuffer.putFloat (value);
     }
 
     public void putDouble(double value) {
+        automaticExpansion ();
         byteBuffer.putDouble (value);
     }
 
     public void putChar(char value) {
+        automaticExpansion ();
         byteBuffer.putChar (value);
     }
 

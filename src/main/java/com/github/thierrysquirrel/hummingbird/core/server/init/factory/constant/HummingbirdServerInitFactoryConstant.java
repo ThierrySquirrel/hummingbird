@@ -24,7 +24,8 @@ package com.github.thierrysquirrel.hummingbird.core.server.init.factory.constant
  * @since JDK 11
  */
 public final class HummingbirdServerInitFactoryConstant {
-    public static final int THREADS_NUMBER=Runtime.getRuntime().availableProcessors() * 2;
+    public static final int THREADS_NUMBER = Runtime.getRuntime ().availableProcessors () * 2;
+
     private HummingbirdServerInitFactoryConstant() {
     }
 }

@@ -15,11 +15,8 @@
  */
 package com.github.thierrysquirrel.hummingbird.core.server.factory.execution;
 
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.factory.SocketSelectorKeysFactory;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 import com.github.thierrysquirrel.hummingbird.core.server.factory.ServerSocketSelectorKeysFactory;
 
 import java.io.IOException;
@@ -28,6 +25,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Classname: ServerSocketSelectorKeysFactoryExecution
@@ -41,17 +39,19 @@ public class ServerSocketSelectorKeysFactoryExecution {
     private ServerSocketSelectorKeysFactoryExecution() {
     }
 
-    public static <T> void serverSocketSelectorKeys(ServerSocketChannel serverSocketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, Selector selector) throws IOException {
+    public static <T> void serverSocketSelectorKeys(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain, Selector selector) throws IOException {
         Iterator<SelectionKey> selectionKeyIterator = selector.selectedKeys ().iterator ();
         while (selectionKeyIterator.hasNext ()) {
-            SelectionKey selectionKey = selectionKeyIterator.next ();
-            selectionKeyIterator.remove ();
-            if (selectionKey.isAcceptable ()) {
-                ServerSocketSelectorKeysFactory.isAcceptable (serverSocketChannel, selector);
+            SelectionKey selectionKey = SocketSelectorKeysFactory.getSelectionKey (selectionKeyIterator);
+            if (Objects.isNull (selectionKey)) {
                 return;
             }
+            if (selectionKey.isAcceptable ()) {
+                ServerSocketSelectorKeysFactory.isAcceptable (serverSocketChannel, selector);
+                continue;
+            }
             if (selectionKey.isReadable ()) {
-                SocketSelectorKeysFactory.isReadable ((SocketChannel) selectionKey.channel (),hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache);
+                SocketSelectorKeysFactory.isReadable ((SocketChannel) selectionKey.channel (), hummingbirdDomain);
             }
         }
     }

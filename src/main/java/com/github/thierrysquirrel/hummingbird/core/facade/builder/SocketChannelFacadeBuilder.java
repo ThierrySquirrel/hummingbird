@@ -16,6 +16,7 @@
 package com.github.thierrysquirrel.hummingbird.core.facade.builder;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
+import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
 import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
@@ -34,13 +35,16 @@ import java.nio.channels.SocketChannel;
 public class SocketChannelFacadeBuilder {
     private SocketChannelFacadeBuilder() {
     }
-    public static <T> SocketChannelFacade<T> builderSocketChannelFacade(HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, SocketChannel socketChannel) throws IOException {
-        SocketChannelFacade<T> socketChannelFacade=new SocketChannelFacade<> ();
+
+    public static <T> SocketChannelFacade<T> builderSocketChannelFacade(HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, SocketChannel socketChannel) throws IOException {
+        SocketChannelFacade<T> socketChannelFacade = new SocketChannelFacade<> ();
         socketChannelFacade.setHummingbirdEncoder (hummingbirdEncoder);
         socketChannelFacade.setHummingbirdHandler (hummingbirdHandler);
         socketChannelFacade.setChannelHeartbeatDomainCache (channelHeartbeatDomainCache);
+        socketChannelFacade.setHummingbirdDecoderCache (hummingbirdDecoderCache);
         socketChannelFacade.setSocketChannel (socketChannel);
         socketChannelFacade.setRemoteAddress (socketChannel.getRemoteAddress ());
+        socketChannelFacade.setLocalAddress (socketChannel.getLocalAddress ());
         return socketChannelFacade;
     }
 }

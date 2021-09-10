@@ -31,16 +31,17 @@ import java.util.concurrent.*;
 public class ThreadPoolExecutorBuilder {
     private ThreadPoolExecutorBuilder() {
     }
+
     public static ScheduledThreadPoolExecutor builderChannelHeartbeatThreadPoolExecutor() {
         ThreadFactory threadFactory = new ThreadFactoryBuilder ()
-                .setNameFormat(ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT).build();
-        return new ScheduledThreadPoolExecutor(ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_CORE_POOL_SIZE, threadFactory);
+                .setNameFormat (ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT).build ();
+        return new ScheduledThreadPoolExecutor (ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_CORE_POOL_SIZE, threadFactory);
     }
 
     public static ThreadPoolExecutor builderHummingbirdServerThreadPoolExecutor() {
-        var threadFactory = new ThreadFactoryBuilder()
-                .setNameFormat(ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER).build();
-        return new ThreadPoolExecutor(ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER_CORE_POOL_SIZE,
+        var threadFactory = new ThreadFactoryBuilder ()
+                .setNameFormat (ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER).build ();
+        return new ThreadPoolExecutor (ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER_CORE_POOL_SIZE,
                 ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER_MAXIMUM_POOL_SIZE,
                 ThreadPoolExecutorBuilderConstant.KEEP_ALIVE_TIME,
                 TimeUnit.MILLISECONDS,

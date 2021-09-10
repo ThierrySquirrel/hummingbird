@@ -35,8 +35,12 @@ public class ByteBufferFacadeChannelWriteCache {
     private ByteBufferFacadeChannelWriteCache() {
     }
 
-    public static ByteBufferFacade getByteBufferFacade() {
-        return CHANNEL_WRITE_CACHE.computeIfAbsent (Thread.currentThread ().getName (), key -> ByteBufferFacadeBuilder.builderByteBufferFacade ());
+    public static ByteBufferFacade getByteBufferFacade(String socketChannelString) {
+        return CHANNEL_WRITE_CACHE.computeIfAbsent (socketChannelString, key -> ByteBufferFacadeBuilder.builderByteBufferFacade ());
+    }
+
+    public static void removeByteBufferFacade(String socketChannelString) {
+        CHANNEL_WRITE_CACHE.remove (socketChannelString);
     }
 
 }

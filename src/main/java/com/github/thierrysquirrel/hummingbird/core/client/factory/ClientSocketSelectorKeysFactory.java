@@ -16,6 +16,7 @@
 package com.github.thierrysquirrel.hummingbird.core.client.factory;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
+import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
 import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import com.github.thierrysquirrel.hummingbird.core.facade.builder.SocketChannelFacadeBuilder;
@@ -40,15 +41,15 @@ public class ClientSocketSelectorKeysFactory {
     private ClientSocketSelectorKeysFactory() {
     }
 
-    public static <T> void isConnectable(SocketChannel socketChannel, SelectionKey selectionKey, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
+    public static <T> void isConnectable(SocketChannel socketChannel, SelectionKey selectionKey, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
         socketChannel.finishConnect ();
         selectionKey.interestOps (selectionKey.interestOps () & ~SelectionKey.OP_CONNECT);
         selectionKey.interestOps (selectionKey.interestOps () | SelectionKey.OP_READ);
-        completeSocketChannelFacade (socketChannel, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, socketChannelFacadeCompletableFuture);
+        completeSocketChannelFacade (socketChannel, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache, socketChannelFacadeCompletableFuture);
     }
 
-    private static <T> void completeSocketChannelFacade(SocketChannel socketChannel, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
-        SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade (hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, socketChannel);
+    private static <T> void completeSocketChannelFacade(SocketChannel socketChannel, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
+        SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade (hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache, socketChannel);
         socketChannelFacadeCompletableFuture.complete (socketChannelFacade);
     }
 }

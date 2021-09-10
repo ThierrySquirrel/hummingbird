@@ -16,6 +16,7 @@
 package com.github.thierrysquirrel.hummingbird.core.coder;
 
 import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
+import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 
 /**
  * Classname: HummingbirdDecoder
@@ -28,10 +29,11 @@ import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 @FunctionalInterface
 public interface HummingbirdDecoder<T> {
     /**
-     * decoder
+     * byteBufferFacade
      *
-     * @param byteBufferFacade byteBufferFacade
-     * @return T
+     * @param byteBufferFacade    byteBufferFacade
+     * @param socketChannelFacade socketChannelFacade
+     * @return decoder
      */
-    T decoder(ByteBufferFacade byteBufferFacade);
+    T decoder(ByteBufferFacade byteBufferFacade, SocketChannelFacade<T> socketChannelFacade);
 }

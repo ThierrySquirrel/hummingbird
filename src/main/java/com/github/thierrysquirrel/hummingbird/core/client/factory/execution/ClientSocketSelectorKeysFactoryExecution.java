@@ -16,18 +16,16 @@
 package com.github.thierrysquirrel.hummingbird.core.client.factory.execution;
 
 import com.github.thierrysquirrel.hummingbird.core.client.factory.ClientSocketSelectorKeysFactory;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import com.github.thierrysquirrel.hummingbird.core.factory.SocketSelectorKeysFactory;
-import com.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -41,18 +39,20 @@ import java.util.concurrent.CompletableFuture;
 public class ClientSocketSelectorKeysFactoryExecution {
     private ClientSocketSelectorKeysFactoryExecution() {
     }
-    public static <T> void clientSocketSelectorKeys(SocketChannel socketChannel, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder,
-                                                    HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture, Selector selector) throws IOException {
+
+    public static <T> void clientSocketSelectorKeys(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture, Selector selector) throws IOException {
         Iterator<SelectionKey> selectionKeyIterator = selector.selectedKeys ().iterator ();
-        while (selectionKeyIterator.hasNext ()){
-            SelectionKey selectionKey = selectionKeyIterator.next ();
-            selectionKeyIterator.remove ();
-            if(selectionKey.isConnectable ()){
-                ClientSocketSelectorKeysFactory.isConnectable (socketChannel,selectionKey,hummingbirdEncoder,hummingbirdHandler,channelHeartbeatDomainCache,socketChannelFacadeCompletableFuture);
-                break;
+        while (selectionKeyIterator.hasNext ()) {
+            SelectionKey selectionKey = SocketSelectorKeysFactory.getSelectionKey (selectionKeyIterator);
+            if (Objects.isNull (selectionKey)) {
+                return;
             }
-            if(selectionKey.isReadable ()){
-                SocketSelectorKeysFactory.isReadable (socketChannel,hummingbirdDecoder,hummingbirdEncoder,hummingbirdHandler,channelHeartbeatDomainCache);
+            if (selectionKey.isConnectable ()) {
+                ClientSocketSelectorKeysFactory.isConnectable (socketChannel, selectionKey, hummingbirdDomain.getHummingbirdEncoder (), hummingbirdDomain.getHummingbirdHandler (), hummingbirdDomain.getChannelHeartbeatDomainCache (), hummingbirdDomain.getHummingbirdDecoderCache (), socketChannelFacadeCompletableFuture);
+                continue;
+            }
+            if (selectionKey.isReadable ()) {
+                SocketSelectorKeysFactory.isReadable (socketChannel, hummingbirdDomain);
             }
         }
     }

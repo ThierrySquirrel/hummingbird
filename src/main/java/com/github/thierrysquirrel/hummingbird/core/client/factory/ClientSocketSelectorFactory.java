@@ -31,12 +31,14 @@ import java.nio.channels.SocketChannel;
 public class ClientSocketSelectorFactory {
     private ClientSocketSelectorFactory() {
     }
+
     public static Selector registerConnectSelector(SocketChannel socketChannel) throws IOException {
-        Selector selector = Selector.open();
-        socketChannel.register(selector, SelectionKey.OP_CONNECT);
+        Selector selector = Selector.open ();
+        socketChannel.register (selector, SelectionKey.OP_CONNECT);
         return selector;
     }
-    public static void close(Selector selector,SocketChannel socketChannel) throws IOException {
+
+    public static void close(Selector selector, SocketChannel socketChannel) throws IOException {
         selector.close ();
         socketChannel.close ();
     }

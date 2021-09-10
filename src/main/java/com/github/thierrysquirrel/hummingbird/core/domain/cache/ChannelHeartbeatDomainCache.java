@@ -53,34 +53,36 @@ public class ChannelHeartbeatDomainCache<T> {
         channelHeartbeatDomain.setWriteHeartbeatTime (System.currentTimeMillis ());
     }
 
-    public void heartbeat(){
+    public void heartbeat() {
         long thisTime = System.currentTimeMillis ();
         for (Map.Entry<String, ChannelHeartbeatDomain<T>> entry : heartbeatDomainMap.entrySet ()) {
             ChannelHeartbeatDomain<T> channelHeartbeatDomain = entry.getValue ();
             SocketChannelFacade<T> socketChannelFacade = channelHeartbeatDomain.getSocketChannelFacade ();
 
-            if(readHeartbeatTime>0){
+            if (readHeartbeatTime > 0) {
                 long channelReadTime = channelHeartbeatDomain.getReadHeartbeatTime ();
-                channelTimeout (thisTime,channelReadTime,readHeartbeatTime,socketChannelFacade);
+                channelTimeout (thisTime, channelReadTime, readHeartbeatTime, socketChannelFacade);
             }
-            if(writeHeartbeatTime>0){
+            if (writeHeartbeatTime > 0) {
                 long channelWriteTime = channelHeartbeatDomain.getWriteHeartbeatTime ();
-                channelTimeout (thisTime,channelWriteTime,writeHeartbeatTime,socketChannelFacade);
+                channelTimeout (thisTime, channelWriteTime, writeHeartbeatTime, socketChannelFacade);
             }
         }
     }
-    private void channelTimeout(long thisTimeout,long channelHeartbeatTime,long heartbeatTime,SocketChannelFacade<T> socketChannelFacade){
-        long beatTime=thisTimeout-channelHeartbeatTime;
-        if(beatTime>heartbeatTime){
+
+    private void channelTimeout(long thisTimeout, long channelHeartbeatTime, long heartbeatTime, SocketChannelFacade<T> socketChannelFacade) {
+        long beatTime = thisTimeout - channelHeartbeatTime;
+        if (beatTime > heartbeatTime) {
             hummingbirdHandler.channelTimeout (socketChannelFacade);
         }
     }
-    public void remove(String remoteAddress) {
-        heartbeatDomainMap.remove (remoteAddress);
+
+    public void remove(String socketChannelString) {
+        heartbeatDomainMap.remove (socketChannelString);
     }
 
     private ChannelHeartbeatDomain<T> getChannelHeartbeatDomain(SocketChannelFacade<T> socketChannelFacade) {
-        return heartbeatDomainMap.computeIfAbsent (socketChannelFacade.getRemoteAddress ().toString (), key -> ChannelHeartbeatDomainBuilder.builderChannelHeartbeatDomain (socketChannelFacade));
+        return heartbeatDomainMap.computeIfAbsent (socketChannelFacade.getSocketChannel ().toString (), key -> ChannelHeartbeatDomainBuilder.builderChannelHeartbeatDomain (socketChannelFacade));
     }
 
 }

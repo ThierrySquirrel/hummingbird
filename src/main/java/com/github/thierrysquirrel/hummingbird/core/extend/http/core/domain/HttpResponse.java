@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.thierrysquirrel.hummingbird.core.facade.constant;
+package com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain;
+
+import lombok.Data;
 
 /**
- * Classname: ByteBufferFacadeBuilderConstant
+ * Classname: HttpResponse
  * Description:
- * Date: 2021/7/29 20:09
+ * Date: 2021/9/10 17:59
  *
  * @author ThierrySquirrel
  * @since JDK 11
  */
-public final class ByteBufferFacadeBuilderConstant {
-
-    public static final int INIT_SIZE = 4194304;
-
-    private ByteBufferFacadeBuilderConstant() {
-    }
-
+@Data
+public class HttpResponse {
+    private String httpEdition;
+    private String httpStatusCode;
+    private String httpStatus;
 }
