@@ -15,8 +15,14 @@
  */
 package com.github.thierrysquirrel.hummingbird.core.extend.http.core.factory;
 
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderKeyConstant;
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderValueConstant;
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.factory.constant.BoundaryConstant;
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.factory.constant.HttpHeaderFactoryConstant;
+
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Classname: HttpHeaderFactory
@@ -48,4 +54,50 @@ public class HttpHeaderFactory {
         }
         return null;
     }
+
+    public static boolean equalsIgnoreCaseContentType(Map<String, String> httpHeader, String contentType) {
+        String httpHeaderValue = getHttpHeaderValue (httpHeader, HttpHeaderKeyConstant.CONTENT_TYPE);
+        if (null == httpHeaderValue) {
+            return Boolean.FALSE;
+        }
+        String[] splitHeaderValue = httpHeaderValue.split (HttpHeaderFactoryConstant.SEMICOLON_STRING);
+        String headerValueContentType = splitHeaderValue[0];
+        if (headerValueContentType.equalsIgnoreCase (contentType)) {
+            return Boolean.TRUE;
+        } else {
+            return Boolean.FALSE;
+        }
+    }
+
+    public static String getBoundary(Map<String, String> httpHeader) {
+        String httpHeaderValue = getHttpHeaderValue (httpHeader, HttpHeaderKeyConstant.CONTENT_TYPE);
+        if (null == httpHeaderValue) {
+            return null;
+        }
+        String[] splitHeaderValue = httpHeaderValue.split (HttpHeaderFactoryConstant.SEMICOLON_STRING);
+        for (String headerValue : splitHeaderValue) {
+            if (headerValue.contains (HttpHeaderFactoryConstant.BOUNDARY)) {
+                return headerValue.strip ().split (HttpHeaderFactoryConstant.EQUALS_SIGN)[1];
+            }
+        }
+        return null;
+    }
+
+    public static String createBoundary() {
+        int boundaryInt = ThreadLocalRandom.current ().nextInt ();
+        return new String (BoundaryConstant.BOUNDARY.getValue ()) + boundaryInt;
+    }
+
+    public static String createFormDataContentTypeValue(String boundary) {
+        StringBuilder contentTypeValue = new StringBuilder (HttpHeaderValueConstant.FORM_DATA);
+        contentTypeValue.append (HttpHeaderFactoryConstant.SEMICOLON_STRING);
+        contentTypeValue.append (HttpHeaderFactoryConstant.SPACE);
+        contentTypeValue.append (HttpHeaderFactoryConstant.BOUNDARY);
+        contentTypeValue.append (HttpHeaderFactoryConstant.EQUALS_SIGN);
+        contentTypeValue.append (boundary);
+        return contentTypeValue.toString ();
+
+    }
+
+
 }

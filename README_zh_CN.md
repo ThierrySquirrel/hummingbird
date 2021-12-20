@@ -17,7 +17,7 @@ Tcp开发工具包
         <dependency>
             <artifactId>hummingbird</artifactId>
             <groupId>com.github.thierrysquirrel</groupId>
-            <version>1.0.1.3-RELEASE</version>
+            <version>1.0.2.0-RELEASE</version>
         </dependency>
 ```
 
@@ -220,22 +220,38 @@ public class HttpServerHeader implements HummingbirdHandler<HttpRequestContext> 
 
     @Override
     public void channelMessage(SocketChannelFacade<HttpRequestContext> socketChannelFacade, HttpRequestContext message) {
-        log.info (message.toString ());
-        HttpResponse httpResponse = HttpResponseBuilder.builderHttpResponse (HttpEditionConstant.DEFAULT_EDITION, HttpStatusCodeConstant.SUCCESS, HttpStatusConstant.OK);
-        HttpRequestContext httpRequestContext = new HttpRequestContext ();
-        httpRequestContext.setHttpResponse (httpResponse);
-        Map<String, String> httpHeader = new HashMap<> ();
-        byte[] bodyBytes = "Hello World".getBytes ();
-        httpHeader.put (HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.TEXT_PLAIN);
-        httpHeader.put (HttpHeaderKeyConstant.CONTENT_LENGTH, bodyBytes.length + "");
-        httpHeader.put (HttpHeaderKeyConstant.CONNECTION, HttpHeaderValueConstant.KEEP_ALIVE);
-        httpRequestContext.setHttpHeader (httpHeader);
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect (bodyBytes.length);
-        byteBuffer.put (bodyBytes);
-        byteBuffer.flip ();
-        httpRequestContext.setHttpBody (byteBuffer);
-        try {
+        String httpUri = message.getHttpRequest ().getHttpUri ();
+        Map<String, String> urlMap = HttpUrlCoderRootChainFactory.createUrlMap (httpUri);
+        log.info (urlMap.toString ());
 
+        Map<String, String> httpHeader = message.getHttpHeader ();
+        boolean isFormData = HttpHeaderFactory.equalsIgnoreCaseContentType (httpHeader, HttpHeaderValueConstant.FORM_DATA);
+        if(isFormData){
+            Map<String, HttpFormData> formDataBody = HttpBodyFactory.getFormDataBody (message);
+            for (Map.Entry<String, HttpFormData> dataEntry : formDataBody.entrySet ()) {
+                HttpFormData value = dataEntry.getValue ();
+                if(value.isFile ()){
+                    try {
+                        HttpFormDataBodyFactory.writeFile (value,"/cache/"+value.getFileName ());
+                    } catch (IOException e) {
+                        log.error ("writeFile Error",e);
+                    }
+                }
+            }
+        }
+        boolean isFormUrlencoded = HttpHeaderFactory.equalsIgnoreCaseContentType (httpHeader, HttpHeaderValueConstant.FORM_URLENCODED);
+        if(isFormUrlencoded){
+            Map<String, String> formUrlencodedMap = HttpServerBodyDecoderFactory.builderFormUrlencoded (message);
+            log.info (formUrlencodedMap.toString ());
+        }
+        boolean isText = HttpHeaderFactory.equalsIgnoreCaseContentType (httpHeader, HttpHeaderValueConstant.TEXT_PLAIN);
+        if(isText){
+            String text = HttpServerBodyDecoderFactory.builderText (message);
+            log.info (text);
+        }
+
+        HttpRequestContext httpRequestContext = HttpRequestContextBuilder.builderTextResponse ("Hello World");
+        try {
             socketChannelFacade.sendMessage (httpRequestContext);
         } catch (IOException e) {
             e.printStackTrace ();
@@ -298,6 +314,7 @@ public class HttpClientHeader implements HummingbirdHandler<HttpRequestContext> 
 
 # 启动 HttpClient
  ```java
+@Slf4j
 @Data
 public class HttpClient {
     public static final ExecutorService clientThreadPool = Executors.newFixedThreadPool (16);
@@ -311,25 +328,33 @@ public class HttpClient {
                 0, new HttpClientDecoder (), new HttpClientEncoder (), new HttpClientHeader (httpClient));
         SocketChannelFacade<HttpRequestContext> connect = httpClientInit.connect ();
 
-        HttpRequestContext httpRequestContext = new HttpRequestContext ();
-        HttpRequest httpRequest = HttpRequestBuilder.builderHttpRequest (HttpMethodConstant.POST, "/hello", HttpEditionConstant.DEFAULT_EDITION);
-        httpRequestContext.setHttpRequest (httpRequest);
+        String uri = HttpUrlCoderRootChainFactory.createUrl ("/user", "hello", "world")
+                .putUrl ("id", "123456").builder ();
 
-        Map<String, String> httpHandler = Maps.newConcurrentMap ();
-        byte[] bodyBytes = "Hello World".getBytes ();
-        httpHandler.put (HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.TEXT_PLAIN);
-        httpHandler.put (HttpHeaderKeyConstant.CONTENT_LENGTH, bodyBytes.length + "");
-        httpHandler.put (HttpHeaderKeyConstant.CONNECTION, HttpHeaderValueConstant.KEEP_ALIVE);
-        httpRequestContext.setHttpHeader (httpHandler);
+        HttpRequestContext httpRequestContext = HttpRequestContextBuilder.builderRequest (HttpMethodConstant.POST,uri);
 
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect (bodyBytes.length);
-        byteBuffer.put (bodyBytes);
-        byteBuffer.flip ();
-        httpRequestContext.setHttpBody (byteBuffer);
+        boolean isFormData=Boolean.FALSE;
+        if(isFormData){
+            HttpClientBodyEncoderRootChainFactory.createFormData (httpRequestContext)
+                    .putText ("hello","world")
+                    .putFile ("file","filePath",HttpHeaderValueConstant.FORM_DATA)
+                    .builder ();
+        }
+        boolean isFormUrlencoded=Boolean.TRUE;
+        if(isFormUrlencoded){
+            HttpClientBodyEncoderRootChainFactory.createFormUrlencoded (httpRequestContext,"hello","world")
+                    .putText ("id","654321")
+                    .builder ();
+        }
+
+        boolean isText=Boolean.FALSE;
+        if(isText){
+            HttpClientBodyEncoderRootChainFactory.createText (httpRequestContext,"hello world");
+        }
 
         connect.sendMessage (httpRequestContext);
         HttpRequestContext callHttpRequestContext = httpClient.getCall ().get ();
-        System.out.println (callHttpRequestContext);
+        log.info (callHttpRequestContext.toString ());
     }
 }
  ```

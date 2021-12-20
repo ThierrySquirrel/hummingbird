@@ -27,6 +27,15 @@ public final class HttpHeaderValueConstant {
     private HttpHeaderValueConstant() {
     }
 
+    public static final String JSON = "application/json";
     public static final String TEXT_PLAIN = "text/plain";
+    public static final String FORM_DATA = "multipart/form-data";
+    public static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
+    public static final String OCTET_STREAM = "application/octet-stream";
+
     public static final String KEEP_ALIVE = "keep-alive";
+
+    public static final String JPG = "image/jpeg";
+    public static final String PNG = "image/png";
+
 }

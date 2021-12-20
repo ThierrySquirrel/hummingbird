@@ -39,4 +39,11 @@ public class HttpResponseBuilder {
         httpResponse.setHttpStatus (httpStatus);
         return httpResponse;
     }
+    public static HttpResponse builderDefault(){
+        HttpResponse httpResponse = new HttpResponse ();
+        httpResponse.setHttpEdition (HttpEditionConstant.DEFAULT_EDITION);
+        httpResponse.setHttpStatusCode (HttpStatusCodeConstant.SUCCESS);
+        httpResponse.setHttpStatus (HttpStatusConstant.OK);
+        return httpResponse;
+    }
 }

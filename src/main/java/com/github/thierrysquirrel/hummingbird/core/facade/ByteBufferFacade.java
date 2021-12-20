@@ -84,6 +84,24 @@ public class ByteBufferFacade {
         clearMake ();
     }
 
+    public byte[] getAllBytes() {
+        int length = length ();
+        byte[] allBytes = new byte[length];
+        byteBuffer.get (allBytes);
+        return allBytes;
+    }
+
+    public void getByteBuffer(ByteBuffer value) {
+        int valueLength = length (value);
+        int position = byteBuffer.position ();
+        int readLimit = position + valueLength;
+        int makeLimit = byteBuffer.limit ();
+
+        byteBuffer.limit (readLimit);
+        value.put (byteBuffer);
+        byteBuffer.limit (makeLimit);
+    }
+
     public void make() {
         setMakePosition (byteBuffer.position ());
     }
@@ -96,7 +114,7 @@ public class ByteBufferFacade {
         setMakePosition (-1);
     }
 
-    private void automaticExpansion() {
+    public void automaticExpansion() {
         if (isExpansion ()) {
             byteBuffer.flip ();
             expansion ();
@@ -134,20 +152,8 @@ public class ByteBufferFacade {
         byteBuffer.put (value);
     }
 
-    public boolean tryGet(ByteBuffer value) {
-        int valueSize = length (value);
-        int length = length ();
-        if (valueSize > length) {
-            value.put (byteBuffer);
-            return Boolean.FALSE;
-        } else {
-            int makeLimit = byteBuffer.limit ();
-            int readSize = valueSize + byteBuffer.position ();
-            byteBuffer.limit (readSize);
-            value.put (byteBuffer);
-            byteBuffer.limit (makeLimit);
-            return Boolean.TRUE;
-        }
+    public void putString(String value) {
+        putBytes (value.getBytes ());
     }
 
     public void putBytes(byte[] value) {
@@ -188,6 +194,22 @@ public class ByteBufferFacade {
     public void putChar(char value) {
         automaticExpansion ();
         byteBuffer.putChar (value);
+    }
+
+    public boolean tryGet(ByteBuffer value) {
+        int valueSize = length (value);
+        int length = length ();
+        if (valueSize > length) {
+            value.put (byteBuffer);
+            return Boolean.FALSE;
+        } else {
+            int makeLimit = byteBuffer.limit ();
+            int readSize = valueSize + byteBuffer.position ();
+            byteBuffer.limit (readSize);
+            value.put (byteBuffer);
+            byteBuffer.limit (makeLimit);
+            return Boolean.TRUE;
+        }
     }
 
     public byte getByte() {

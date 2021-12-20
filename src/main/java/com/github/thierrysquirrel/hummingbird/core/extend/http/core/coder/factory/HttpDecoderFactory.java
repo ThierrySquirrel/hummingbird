@@ -25,6 +25,7 @@ import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.const
 import com.github.thierrysquirrel.hummingbird.core.extend.http.core.factory.HttpHeaderFactory;
 import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
+import com.github.thierrysquirrel.hummingbird.core.facade.builder.ByteBufferFacadeBuilder;
 import com.google.common.collect.Maps;
 
 import java.nio.ByteBuffer;
@@ -68,11 +69,10 @@ public class HttpDecoderFactory {
 
 
     public static HttpRequestContext readHttpHeaderHttpBody(ByteBufferFacade byteBufferFacade, SocketChannelFacade<HttpRequestContext> socketChannelFacade, HttpRequestContext httpRequestContext) {
-        Map<String, String> httpHeader = readHttpHeader (byteBufferFacade);
-        if (Objects.isNull (httpHeader)) {
+        HttpRequestContext readHttpHeader = readHttpHeader (byteBufferFacade, httpRequestContext);
+        if (Objects.isNull (readHttpHeader)) {
             return null;
         }
-        httpRequestContext.setHttpHeader (httpHeader);
         return tryReadHttpBody (byteBufferFacade, socketChannelFacade, httpRequestContext);
     }
 
@@ -97,7 +97,7 @@ public class HttpDecoderFactory {
         return null;
     }
 
-    private static Map<String, String> readHttpHeader(ByteBufferFacade byteBufferFacade) {
+    private static HttpRequestContext readHttpHeader(ByteBufferFacade byteBufferFacade, HttpRequestContext httpRequestContext) {
         Map<String, String> readHttpHeader = Maps.newConcurrentMap ();
         while (true) {
             String readData = readLine (byteBufferFacade);
@@ -111,11 +111,12 @@ public class HttpDecoderFactory {
             String[] httpHeaderSplit = readData.split (HttpCoderConstant.COLON_STRING);
             readHttpHeader.put (httpHeaderSplit[0], httpHeaderSplit[1].strip ());
         }
-        return readHttpHeader;
+        httpRequestContext.setHttpHeader (readHttpHeader);
+        return httpRequestContext;
     }
 
-    private static String readLine(ByteBufferFacade byteBufferFacade) {
-        StringBuilder readData = new StringBuilder ();
+    public static String readLine(ByteBufferFacade byteBufferFacade) {
+        ByteBufferFacade readData = ByteBufferFacadeBuilder.builderByteBufferFacade ();
         boolean readSuccessful = Boolean.FALSE;
         while (byteBufferFacade.readComplete ()) {
             byte data = byteBufferFacade.getByte ();
@@ -131,11 +132,12 @@ public class HttpDecoderFactory {
                     return null;
                 }
             }
-            readData.append ((char) data);
+            readData.putByte (data);
         }
         if (!readSuccessful) {
             return null;
         }
-        return readData.toString ();
+        readData.flip ();
+        return new String (readData.getAllBytes ());
     }
 }

@@ -32,9 +32,21 @@ public class ByteBufferFacadeBuilder {
     private ByteBufferFacadeBuilder() {
     }
 
-    public static ByteBufferFacade builderByteBufferFacade() {
+    public static ByteBufferFacade builderDirectByteBufferFacade() {
         ByteBufferFacade byteBufferFacade = new ByteBufferFacade ();
         byteBufferFacade.setByteBuffer (ByteBuffer.allocateDirect (ByteBufferFacadeConstant.INIT_SIZE));
+        return byteBufferFacade;
+    }
+
+    public static ByteBufferFacade builderByteBufferFacade() {
+        ByteBufferFacade byteBufferFacade = new ByteBufferFacade ();
+        byteBufferFacade.setByteBuffer (ByteBuffer.allocate (ByteBufferFacadeConstant.INIT_SIZE));
+        return byteBufferFacade;
+    }
+
+    public static ByteBufferFacade builderByteBufferFacade(ByteBuffer byteBuffer) {
+        ByteBufferFacade byteBufferFacade = new ByteBufferFacade ();
+        byteBufferFacade.setByteBuffer (byteBuffer);
         return byteBufferFacade;
     }
 }

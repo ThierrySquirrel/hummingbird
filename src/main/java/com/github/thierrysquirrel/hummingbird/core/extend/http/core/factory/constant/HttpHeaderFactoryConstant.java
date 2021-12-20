@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.thierrysquirrel.hummingbird.core.factory.constant;
+package com.github.thierrysquirrel.hummingbird.core.extend.http.core.factory.constant;
 
 /**
- * Classname: SocketSelectorFactoryConstant
+ * Classname: HttpHeaderFactoryConstant
  * Description:
- * Date: 2021/7/29 22:00
+ * Date: 2021/12/20 17:39
  *
  * @author ThierrySquirrel
  * @since JDK 11
  */
-public final class SocketSelectorFactoryConstant {
-    public static final int SELECT = 1024;
-    public static final int SELECT_OFFSET_MAX = 64;
+public final class HttpHeaderFactoryConstant {
+    public static final String SEMICOLON_STRING = ";";
+    public static final String BOUNDARY = "boundary";
+    public static final String EQUALS_SIGN = "=";
+    public static final String SPACE = " ";
 
-    private SocketSelectorFactoryConstant() {
+    private HttpHeaderFactoryConstant() {
     }
-
 }

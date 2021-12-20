@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.thierrysquirrel.hummingbird.core.factory.constant;
+package com.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.server.factory.domain;
+
+import lombok.Data;
+
+import java.nio.ByteBuffer;
 
 /**
- * Classname: SocketSelectorFactoryConstant
+ * Classname: HttpFormData
  * Description:
- * Date: 2021/7/29 22:00
+ * Date: 2021/12/20 17:29
  *
  * @author ThierrySquirrel
  * @since JDK 11
  */
-public final class SocketSelectorFactoryConstant {
-    public static final int SELECT = 1024;
-    public static final int SELECT_OFFSET_MAX = 64;
-
-    private SocketSelectorFactoryConstant() {
-    }
-
+@Data
+public class HttpFormData {
+    private String value;
+    private boolean isFile;
+    private String fileName;
+    private String fileContentType;
+    private ByteBuffer fileValue;
 }

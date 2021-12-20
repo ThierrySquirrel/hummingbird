@@ -18,6 +18,10 @@ package com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.buil
 import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRequest;
 import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRequestContext;
 import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpResponse;
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpEditionConstant;
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderKeyConstant;
+import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderValueConstant;
+import com.google.common.collect.Maps;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -44,5 +48,49 @@ public class HttpRequestContextBuilder {
         HttpRequestContext httpRequestContext = new HttpRequestContext ();
         httpRequestContext.setHttpResponse (httpResponse);
         return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderRequest(String httpMethod, String httpUri) {
+        HttpRequestContext httpRequestContext = new HttpRequestContext ();
+        builderDefaultHttpHeader (httpRequestContext);
+        HttpRequest httpRequest = HttpRequestBuilder.builderHttpRequest (httpMethod, httpUri, HttpEditionConstant.DEFAULT_EDITION);
+        httpRequestContext.setHttpRequest (httpRequest);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderTextResponse(String body) {
+        HttpRequestContext httpRequestContext = new HttpRequestContext ();
+        builderResponseBody (httpRequestContext, body);
+        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.TEXT_PLAIN);
+
+        HttpResponse httpResponse = HttpResponseBuilder.builderDefault ();
+        httpRequestContext.setHttpResponse (httpResponse);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderJsonResponse(String body) {
+        HttpRequestContext httpRequestContext = new HttpRequestContext ();
+        builderResponseBody (httpRequestContext, body);
+        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.JSON);
+
+        return httpRequestContext;
+    }
+
+    private static void builderResponseBody(HttpRequestContext httpRequestContext, String body) {
+        builderDefaultHttpHeader (httpRequestContext);
+        byte[] bodyBytes = body.getBytes ();
+        int bodyLength = bodyBytes.length;
+        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_LENGTH, bodyLength + "");
+
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect (bodyLength);
+        byteBuffer.put (bodyBytes);
+        byteBuffer.flip ();
+        httpRequestContext.setHttpBody (byteBuffer);
+    }
+
+    private static void builderDefaultHttpHeader(HttpRequestContext httpRequestContext) {
+        Map<String, String> httpHeader = Maps.newConcurrentMap ();
+        httpHeader.put (HttpHeaderKeyConstant.CONNECTION, HttpHeaderValueConstant.KEEP_ALIVE);
+        httpRequestContext.setHttpHeader (httpHeader);
     }
 }
