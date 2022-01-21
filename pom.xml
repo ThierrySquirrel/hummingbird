@@ -6,7 +6,7 @@
 
     <groupId>com.github.thierrysquirrel</groupId>
     <artifactId>hummingbird</artifactId>
-    <version>1.0.2.0-RELEASE</version>
+    <version>1.0.2.1-RELEASE</version>
 
     <name>hummingbird</name>
     <description>hummingbird</description>
@@ -15,9 +15,9 @@
     <properties>
         <java.version>11</java.version>
         <guava.version>31.0.1-jre</guava.version>
-        <logback-classic.version>1.2.9</logback-classic.version>
+        <logback-classic.version>1.2.10</logback-classic.version>
         <lombok.version>1.18.22</lombok.version>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.9.0</maven-compiler-plugin.version>
         <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
     </properties>
