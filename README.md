@@ -16,7 +16,7 @@ Help Developers, More Convenient Network Programming
         <dependency>
             <artifactId>hummingbird</artifactId>
             <groupId>com.github.thierrysquirrel</groupId>
-            <version>1.0.2.1-RELEASE</version>
+            <version>1.0.2.2-RELEASE</version>
         </dependency>
 ```
 
