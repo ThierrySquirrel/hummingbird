@@ -359,4 +359,4 @@ public class HttpClient {
 }
  ```
 
-![AmericanFlag](https://user-images.githubusercontent.com/49895274/184471304-06a710e4-9fe4-4854-88bb-d141d7abd243.jpeg)  
+![Russian flag](https://user-images.githubusercontent.com/49895274/190374852-a379e65e-0bfe-4b2c-b5c6-3a08a6c90f79.png)
