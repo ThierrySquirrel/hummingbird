@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.client.factory.chain;
 
 import com.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.client.factory.chain.constant.FormDataChainConstant;
@@ -32,11 +32,11 @@ import java.nio.ByteBuffer;
 /**
  * Classname: FormDataChain
  * Description:
- * Date: 2021/12/20 18:54
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 @Data
 public class FormDataChain {
     private HttpRequestContext httpRequestContext;
@@ -48,100 +48,100 @@ public class FormDataChain {
         this.httpRequestContext = httpRequestContext;
         this.beginBoundary = beginBoundary;
         this.endBoundary = endBoundary;
-        this.httpBody = ByteBufferFacadeBuilder.builderDirectByteBufferFacade ();
+        this.httpBody = ByteBufferFacadeBuilder.builderDirectByteBufferFacade();
     }
 
     public FormDataChain putText(String key, String value) {
-        putBeginBoundary ();
-        putContentDispositionText (key);
-        putTag ();
-        putTextBody (value);
+        putBeginBoundary();
+        putContentDispositionText(key);
+        putTag();
+        putTextBody(value);
         return this;
     }
 
     public FormDataChain putFile(String key, String filePath, String fileContentType) throws IOException {
-        putBeginBoundary ();
-        File file = new File (filePath);
-        putContentDispositionFile (key, file.getName ());
-        putTag ();
-        putContentType (fileContentType);
-        putFileBody (filePath);
+        putBeginBoundary();
+        File file = new File(filePath);
+        putContentDispositionFile(key, file.getName());
+        putTag();
+        putContentType(fileContentType);
+        putFileBody(filePath);
         return this;
     }
 
     public void builder() {
-        putEndBoundary ();
-        httpBody.flip ();
-        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_LENGTH, httpBody.length () + "");
-        httpRequestContext.setHttpBody (httpBody.getByteBuffer ());
+        putEndBoundary();
+        httpBody.flip();
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_LENGTH, httpBody.length() + "");
+        httpRequestContext.setHttpBody(httpBody.getByteBuffer());
     }
 
     private void putContentDispositionFile(String key, String fileName) {
-        putContentDispositionText (key);
-        httpBody.putString (HttpFormDataCoderConstant.SEMICOLON_STRING);
-        httpBody.putString (FormDataChainConstant.SPACE);
+        putContentDispositionText(key);
+        httpBody.putString(HttpFormDataCoderConstant.SEMICOLON_STRING);
+        httpBody.putString(FormDataChainConstant.SPACE);
 
-        httpBody.putString (FormDataChainConstant.FILE_NAME);
-        httpBody.putString (FormDataChainConstant.EQUALS_SIGN);
-        String fileNameQuotationMark = textPutQuotationMark (fileName);
-        httpBody.putString (fileNameQuotationMark);
+        httpBody.putString(FormDataChainConstant.FILE_NAME);
+        httpBody.putString(FormDataChainConstant.EQUALS_SIGN);
+        String fileNameQuotationMark = textPutQuotationMark(fileName);
+        httpBody.putString(fileNameQuotationMark);
     }
 
     private void putContentType(String fileContentType) {
-        httpBody.putString (FormDataChainConstant.CONTENT_TYPE);
-        httpBody.putString (HttpFormDataCoderConstant.COLON);
-        httpBody.putString (FormDataChainConstant.SPACE);
-        httpBody.putString (fileContentType);
-        putTag ();
+        httpBody.putString(FormDataChainConstant.CONTENT_TYPE);
+        httpBody.putString(HttpFormDataCoderConstant.COLON);
+        httpBody.putString(FormDataChainConstant.SPACE);
+        httpBody.putString(fileContentType);
+        putTag();
     }
 
     private void putFileBody(String filePath) throws IOException {
-        putTag ();
-        ByteBuffer fileBody = HttpFormDataBodyFactory.readFile (filePath);
-        httpBody.put (fileBody);
-        putTag ();
+        putTag();
+        ByteBuffer fileBody = HttpFormDataBodyFactory.readFile(filePath);
+        httpBody.put(fileBody);
+        putTag();
     }
 
     private void putContentDispositionText(String name) {
-        httpBody.putString (FormDataChainConstant.CONTENT_DISPOSITION);
-        httpBody.putString (HttpFormDataCoderConstant.COLON);
-        httpBody.putString (FormDataChainConstant.SPACE);
+        httpBody.putString(FormDataChainConstant.CONTENT_DISPOSITION);
+        httpBody.putString(HttpFormDataCoderConstant.COLON);
+        httpBody.putString(FormDataChainConstant.SPACE);
 
-        httpBody.putString (FormDataChainConstant.FORM_DATA);
-        httpBody.putString (HttpFormDataCoderConstant.SEMICOLON_STRING);
-        httpBody.putString (FormDataChainConstant.SPACE);
+        httpBody.putString(FormDataChainConstant.FORM_DATA);
+        httpBody.putString(HttpFormDataCoderConstant.SEMICOLON_STRING);
+        httpBody.putString(FormDataChainConstant.SPACE);
 
-        httpBody.putString (FormDataChainConstant.NAME);
-        httpBody.putString (FormDataChainConstant.EQUALS_SIGN);
-        String nameQuotationMark = textPutQuotationMark (name);
-        httpBody.putString (nameQuotationMark);
+        httpBody.putString(FormDataChainConstant.NAME);
+        httpBody.putString(FormDataChainConstant.EQUALS_SIGN);
+        String nameQuotationMark = textPutQuotationMark(name);
+        httpBody.putString(nameQuotationMark);
     }
 
     private void putTextBody(String text) {
-        putTag ();
-        httpBody.putString (text);
-        putTag ();
+        putTag();
+        httpBody.putString(text);
+        putTag();
     }
 
     private void putBeginBoundary() {
-        httpBody.putString (beginBoundary);
-        putTag ();
+        httpBody.putString(beginBoundary);
+        putTag();
     }
 
     private void putEndBoundary() {
-        httpBody.putString (endBoundary);
-        putTag ();
+        httpBody.putString(endBoundary);
+        putTag();
     }
 
     private void putTag() {
-        httpBody.putByte (HttpCoderConstant.CARRIAGE_RETURN);
-        httpBody.putByte (HttpCoderConstant.LINE_FEED);
+        httpBody.putByte(HttpCoderConstant.CARRIAGE_RETURN);
+        httpBody.putByte(HttpCoderConstant.LINE_FEED);
     }
 
     private String textPutQuotationMark(String text) {
-        StringBuilder stringBuilder = new StringBuilder (FormDataChainConstant.QUOTATION_MARK);
-        stringBuilder.append (text);
-        stringBuilder.append (FormDataChainConstant.QUOTATION_MARK);
-        return stringBuilder.toString ();
+        StringBuilder stringBuilder = new StringBuilder(FormDataChainConstant.QUOTATION_MARK);
+        stringBuilder.append(text);
+        stringBuilder.append(FormDataChainConstant.QUOTATION_MARK);
+        return stringBuilder.toString();
     }
 }

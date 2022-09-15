@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.server.factory.execution;
 
 import com.github.thierrysquirrel.hummingbird.core.builder.constant.ThreadPoolExecutorConstant;
@@ -24,18 +24,18 @@ import java.nio.channels.ServerSocketChannel;
 /**
  * Classname: ServerSocketSelectorExecution
  * Description:
- * Date: 2021/7/29 21:53
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class ServerSocketSelectorExecution {
     private ServerSocketSelectorExecution() {
     }
 
     public static <T> void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) {
-        ServerSocketSelectorThreadExecute<T> serverSocketSelectorThreadExecute = new ServerSocketSelectorThreadExecute<> (serverSocketChannel, hummingbirdDomain);
-        ThreadPoolExecutorConstant.HUMMINGBIRD_SERVER.execute (serverSocketSelectorThreadExecute);
+        ServerSocketSelectorThreadExecute<T> serverSocketSelectorThreadExecute = new ServerSocketSelectorThreadExecute<>(serverSocketChannel, hummingbirdDomain);
+        ThreadPoolExecutorConstant.HUMMINGBIRD_SERVER.execute(serverSocketSelectorThreadExecute);
 
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.client.factory.execution;
 
 import com.github.thierrysquirrel.hummingbird.core.client.factory.ClientSocketSelectorFactory;
 import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import com.github.thierrysquirrel.hummingbird.core.factory.SocketSelectorFactory;
-import com.github.thierrysquirrel.hummingbird.core.factory.constant.SocketSelectorFactoryConstant;
 
 import java.io.IOException;
 import java.nio.channels.Selector;
@@ -29,37 +28,29 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Classname: ClientSocketSelectorFactoryExecution
  * Description:
- * Date: 2021/7/30 12:38
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class ClientSocketSelectorFactoryExecution {
     private ClientSocketSelectorFactoryExecution() {
     }
 
     public static <T> void clientSocketSelector(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
 
-        Selector selector = ClientSocketSelectorFactory.registerConnectSelector (socketChannel);
-        int selectOffset = 0;
+        Selector selector = ClientSocketSelectorFactory.registerConnectSelector(socketChannel);
         while (true) {
-            int select = SocketSelectorFactory.select (selector);
-            if (!socketChannel.isOpen ()) {
+            int select = SocketSelectorFactory.select(selector);
+            if (!socketChannel.isOpen()) {
                 break;
             }
-            hummingbirdDomain.getChannelHeartbeatDomainCache ().heartbeat ();
+            hummingbirdDomain.getChannelHeartbeatDomainCache().heartbeat();
 
             if (select > 0) {
-                selectOffset = 0;
-                ClientSocketSelectorKeysFactoryExecution.clientSocketSelectorKeys (socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture, selector);
-            } else {
-                selectOffset++;
-                if (selectOffset > SocketSelectorFactoryConstant.SELECT_OFFSET_MAX) {
-                    selector = SocketSelectorFactory.repairSelector (selector);
-                    selectOffset = 0;
-                }
+                ClientSocketSelectorKeysFactoryExecution.clientSocketSelectorKeys(socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture, selector);
             }
         }
-        ClientSocketSelectorFactory.close (selector, socketChannel);
+        ClientSocketSelectorFactory.close(selector, socketChannel);
     }
 }

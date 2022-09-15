@@ -16,7 +16,7 @@ Help Developers, More Convenient Network Programming
         <dependency>
             <artifactId>hummingbird</artifactId>
             <groupId>com.github.thierrysquirrel</groupId>
-            <version>1.0.2.3-RELEASE</version>
+            <version>1.1.0.0-RELEASE</version>
         </dependency>
 ```
 
@@ -226,7 +226,7 @@ public class HttpServerHeader implements HummingbirdHandler<HttpRequestContext> 
         Map<String, String> httpHeader = message.getHttpHeader ();
         boolean isFormData = HttpHeaderFactory.equalsIgnoreCaseContentType (httpHeader, HttpHeaderValueConstant.FORM_DATA);
         if(isFormData){
-            Map<String, HttpFormData> formDataBody = HttpBodyFactory.getFormDataBody (message);
+            Map<String, HttpFormData> formDataBody = HttpServerBodyDecoderFactory.builderFormUrlencoded (message);
             for (Map.Entry<String, HttpFormData> dataEntry : formDataBody.entrySet ()) {
                 HttpFormData value = dataEntry.getValue ();
                 if(value.isFile ()){

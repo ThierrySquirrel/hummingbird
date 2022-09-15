@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.facade.builder;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
@@ -27,24 +27,24 @@ import java.nio.channels.SocketChannel;
 /**
  * Classname: SocketChannelFacadeBuilder
  * Description:
- * Date: 2021/7/29 22:18
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class SocketChannelFacadeBuilder {
     private SocketChannelFacadeBuilder() {
     }
 
     public static <T> SocketChannelFacade<T> builderSocketChannelFacade(HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, SocketChannel socketChannel) throws IOException {
-        SocketChannelFacade<T> socketChannelFacade = new SocketChannelFacade<> ();
-        socketChannelFacade.setHummingbirdEncoder (hummingbirdEncoder);
-        socketChannelFacade.setHummingbirdHandler (hummingbirdHandler);
-        socketChannelFacade.setChannelHeartbeatDomainCache (channelHeartbeatDomainCache);
-        socketChannelFacade.setHummingbirdDecoderCache (hummingbirdDecoderCache);
-        socketChannelFacade.setSocketChannel (socketChannel);
-        socketChannelFacade.setRemoteAddress (socketChannel.getRemoteAddress ());
-        socketChannelFacade.setLocalAddress (socketChannel.getLocalAddress ());
+        SocketChannelFacade<T> socketChannelFacade = new SocketChannelFacade<>();
+        socketChannelFacade.setHummingbirdEncoder(hummingbirdEncoder);
+        socketChannelFacade.setHummingbirdHandler(hummingbirdHandler);
+        socketChannelFacade.setChannelHeartbeatDomainCache(channelHeartbeatDomainCache);
+        socketChannelFacade.setHummingbirdDecoderCache(hummingbirdDecoderCache);
+        socketChannelFacade.setSocketChannel(socketChannel);
+        socketChannelFacade.setRemoteAddress(socketChannel.getRemoteAddress());
+        socketChannelFacade.setLocalAddress(socketChannel.getLocalAddress());
         return socketChannelFacade;
     }
 }

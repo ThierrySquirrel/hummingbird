@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,41 +12,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.factory;
 
 import com.github.thierrysquirrel.hummingbird.core.factory.constant.SocketSelectorFactoryConstant;
 
 import java.io.IOException;
-import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 
 /**
  * Classname: SocketSelectorFactory
  * Description:
- * Date: 2021/7/29 21:56
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class SocketSelectorFactory {
     private SocketSelectorFactory() {
     }
 
     public static int select(Selector selector) throws IOException {
-        return selector.select (SocketSelectorFactoryConstant.SELECT);
+        return selector.select(SocketSelectorFactoryConstant.SELECT);
     }
 
-    public static Selector repairSelector(Selector oldSelector) throws IOException {
-        var newSelect = Selector.open ();
-
-        for (SelectionKey selectionKey : oldSelector.keys ()) {
-            if (!oldSelector.isOpen () || !selectionKey.isValid ()) {
-                continue;
-            }
-            int interestOps = selectionKey.interestOps ();
-            selectionKey.channel ().register (newSelect, interestOps);
-        }
-        return newSelect;
-    }
 }

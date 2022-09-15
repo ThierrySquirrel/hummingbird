@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.client.factory;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
@@ -31,25 +31,25 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Classname: ClientSocketSelectorKeysFactory
  * Description:
- * Date: 2021/7/30 12:58
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 @Slf4j
 public class ClientSocketSelectorKeysFactory {
     private ClientSocketSelectorKeysFactory() {
     }
 
     public static <T> void isConnectable(SocketChannel socketChannel, SelectionKey selectionKey, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
-        socketChannel.finishConnect ();
-        selectionKey.interestOps (selectionKey.interestOps () & ~SelectionKey.OP_CONNECT);
-        selectionKey.interestOps (selectionKey.interestOps () | SelectionKey.OP_READ);
-        completeSocketChannelFacade (socketChannel, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache, socketChannelFacadeCompletableFuture);
+        socketChannel.finishConnect();
+        selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_CONNECT);
+        selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_READ);
+        completeSocketChannelFacade(socketChannel, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache, socketChannelFacadeCompletableFuture);
     }
 
     private static <T> void completeSocketChannelFacade(SocketChannel socketChannel, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
-        SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade (hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache, socketChannel);
-        socketChannelFacadeCompletableFuture.complete (socketChannelFacade);
+        SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade(hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache, socketChannel);
+        socketChannelFacadeCompletableFuture.complete(socketChannelFacade);
     }
 }

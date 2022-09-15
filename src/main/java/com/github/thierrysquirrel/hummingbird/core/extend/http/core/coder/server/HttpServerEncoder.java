@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.server;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
@@ -23,15 +23,15 @@ import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 /**
  * Classname: HttpServerEncoder
  * Description:
- * Date: 2021/9/10 18:01
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class HttpServerEncoder implements HummingbirdEncoder<HttpRequestContext> {
     @Override
     public void encoder(HttpRequestContext message, ByteBufferFacade byteBufferFacade) {
-        HttpEncoderFactory.encoderHttpResponse (byteBufferFacade, message);
-        HttpEncoderFactory.encoderHttpHeaderAndHttpBody (byteBufferFacade, message);
+        HttpEncoderFactory.encoderHttpResponse(byteBufferFacade, message);
+        HttpEncoderFactory.encoderHttpHeaderAndHttpBody(byteBufferFacade, message);
     }
 }

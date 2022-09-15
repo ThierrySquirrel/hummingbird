@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.client.factory;
 
 import com.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.client.factory.chain.FormDataChain;
@@ -31,54 +31,54 @@ import java.util.Map;
 /**
  * Classname: HttpClientBodyEncoderRootChainFactory
  * Description:
- * Date: 2021/12/20 18:47
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class HttpClientBodyEncoderRootChainFactory {
     private HttpClientBodyEncoderRootChainFactory() {
     }
 
     public static FormUrlencodedChain createFormUrlencoded(HttpRequestContext httpRequestContext, String key, String value) {
-        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.FORM_URLENCODED);
-        ByteBufferFacade httpBody = ByteBufferFacadeBuilder.builderDirectByteBufferFacade ();
-        FormUrlencodedFactory.putText (httpBody, key, value);
-        return new FormUrlencodedChain (httpBody,httpRequestContext);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.FORM_URLENCODED);
+        ByteBufferFacade httpBody = ByteBufferFacadeBuilder.builderDirectByteBufferFacade();
+        FormUrlencodedFactory.putText(httpBody, key, value);
+        return new FormUrlencodedChain(httpBody, httpRequestContext);
     }
 
     public static FormDataChain createFormData(HttpRequestContext httpRequestContext) {
-        String boundary = HttpHeaderFactory.createBoundary ();
-        String formDataContentTypeValue = HttpHeaderFactory.createFormDataContentTypeValue (boundary);
-        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_TYPE, formDataContentTypeValue);
+        String boundary = HttpHeaderFactory.createBoundary();
+        String formDataContentTypeValue = HttpHeaderFactory.createFormDataContentTypeValue(boundary);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, formDataContentTypeValue);
         String beginBoundary = HttpFormDataCoderConstant.DOUBLE_HYPHEN + boundary;
         String engBoundary = beginBoundary + HttpFormDataCoderConstant.DOUBLE_HYPHEN;
-        return new FormDataChain (httpRequestContext, beginBoundary, engBoundary);
+        return new FormDataChain(httpRequestContext, beginBoundary, engBoundary);
     }
 
     public static void createJson(HttpRequestContext httpRequestContext, String body) {
-        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.JSON);
-        putBytesBody (httpRequestContext, body.getBytes ());
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.JSON);
+        putBytesBody(httpRequestContext, body.getBytes());
     }
 
     public static void createText(HttpRequestContext httpRequestContext, String body) {
-        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.TEXT_PLAIN);
-        putBytesBody (httpRequestContext, body.getBytes ());
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.TEXT_PLAIN);
+        putBytesBody(httpRequestContext, body.getBytes());
     }
 
     public static void createOctetStream(HttpRequestContext httpRequestContext, ByteBuffer body) {
-        Map<String, String> httpHeader = httpRequestContext.getHttpHeader ();
-        httpHeader.put (HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.OCTET_STREAM);
-        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_LENGTH, body.limit () + "");
-        httpRequestContext.setHttpBody (body);
+        Map<String, String> httpHeader = httpRequestContext.getHttpHeader();
+        httpHeader.put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.OCTET_STREAM);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_LENGTH, body.limit() + "");
+        httpRequestContext.setHttpBody(body);
 
     }
 
     private static void putBytesBody(HttpRequestContext httpRequestContext, byte[] bodyBytes) {
-        httpRequestContext.getHttpHeader ().put (HttpHeaderKeyConstant.CONTENT_LENGTH, bodyBytes.length + "");
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect (bodyBytes.length);
-        byteBuffer.put (bodyBytes);
-        byteBuffer.flip ();
-        httpRequestContext.setHttpBody (byteBuffer);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_LENGTH, bodyBytes.length + "");
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bodyBytes.length);
+        byteBuffer.put(bodyBytes);
+        byteBuffer.flip();
+        httpRequestContext.setHttpBody(byteBuffer);
     }
 }

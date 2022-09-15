@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.client.factory.execution;
 
 import com.github.thierrysquirrel.hummingbird.core.client.factory.ClientSocketSelectorKeysFactory;
@@ -31,28 +31,28 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Classname: ClientSocketSelectorKeysFactoryExecution
  * Description:
- * Date: 2021/7/30 12:58
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class ClientSocketSelectorKeysFactoryExecution {
     private ClientSocketSelectorKeysFactoryExecution() {
     }
 
     public static <T> void clientSocketSelectorKeys(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture, Selector selector) throws IOException {
-        Iterator<SelectionKey> selectionKeyIterator = selector.selectedKeys ().iterator ();
-        while (selectionKeyIterator.hasNext ()) {
-            SelectionKey selectionKey = SocketSelectorKeysFactory.getSelectionKey (selectionKeyIterator);
-            if (Objects.isNull (selectionKey)) {
+        Iterator<SelectionKey> selectionKeyIterator = selector.selectedKeys().iterator();
+        while (selectionKeyIterator.hasNext()) {
+            SelectionKey selectionKey = SocketSelectorKeysFactory.getSelectionKey(selectionKeyIterator);
+            if (Objects.isNull(selectionKey)) {
                 return;
             }
-            if (selectionKey.isConnectable ()) {
-                ClientSocketSelectorKeysFactory.isConnectable (socketChannel, selectionKey, hummingbirdDomain.getHummingbirdEncoder (), hummingbirdDomain.getHummingbirdHandler (), hummingbirdDomain.getChannelHeartbeatDomainCache (), hummingbirdDomain.getHummingbirdDecoderCache (), socketChannelFacadeCompletableFuture);
+            if (selectionKey.isConnectable()) {
+                ClientSocketSelectorKeysFactory.isConnectable(socketChannel, selectionKey, hummingbirdDomain.getHummingbirdEncoder(), hummingbirdDomain.getHummingbirdHandler(), hummingbirdDomain.getChannelHeartbeatDomainCache(), hummingbirdDomain.getHummingbirdDecoderCache(), socketChannelFacadeCompletableFuture);
                 continue;
             }
-            if (selectionKey.isReadable ()) {
-                SocketSelectorKeysFactory.isReadable (socketChannel, hummingbirdDomain);
+            if (selectionKey.isReadable()) {
+                SocketSelectorKeysFactory.isReadable(socketChannel, hummingbirdDomain);
             }
         }
     }

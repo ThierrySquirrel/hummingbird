@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,10 +12,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.server.thread;
 
-import com.github.thierrysquirrel.hummingbird.core.domain.ChannelHeartbeatDomain;
 import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Classname: AbstractChannelHeartbeatThread
  * Description:
- * Date: 2021/7/29 21:21
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 @Data
 @Slf4j
 public abstract class AbstractChannelHeartbeatThread<T> implements Runnable {
@@ -47,9 +46,9 @@ public abstract class AbstractChannelHeartbeatThread<T> implements Runnable {
     @Override
     public void run() {
         try {
-            heartbeat (this.channelHeartbeatDomainCache);
+            heartbeat(this.channelHeartbeatDomainCache);
         } catch (Exception e) {
-            log.error ("heartbeat Error", e);
+            log.error("heartbeat Error", e);
         }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.client.thread.execute;
 
 import com.github.thierrysquirrel.hummingbird.core.client.factory.execution.ClientSocketSelectorFactoryExecution;
@@ -27,18 +27,18 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Classname: ClientSocketSelectorThreadExecute
  * Description:
- * Date: 2021/7/30 12:47
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class ClientSocketSelectorThreadExecute<T> extends AbstractClientSocketSelectorThread<T> {
     public ClientSocketSelectorThreadExecute(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
-        super (socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
+        super(socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
     }
 
     @Override
     protected void clientSocketSelector(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
-        ClientSocketSelectorFactoryExecution.clientSocketSelector (socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
+        ClientSocketSelectorFactoryExecution.clientSocketSelector(socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
     }
 }

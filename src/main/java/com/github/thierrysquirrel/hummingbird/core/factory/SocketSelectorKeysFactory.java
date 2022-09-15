@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,14 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.factory;
 
 import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdDecoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
-import com.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
 import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
-import com.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import com.github.thierrysquirrel.hummingbird.core.facade.builder.SocketChannelFacadeBuilder;
@@ -29,67 +26,64 @@ import com.github.thierrysquirrel.hummingbird.core.server.factory.constant.Serve
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Classname: SocketSelectorKeysFactory
  * Description:
- * Date: 2021/7/30 13:25
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 @Slf4j
 public class SocketSelectorKeysFactory {
     private SocketSelectorKeysFactory() {
     }
 
     public static SelectionKey getSelectionKey(Iterator<SelectionKey> selectionKeyIterator) {
-        SelectionKey selectionKey = selectionKeyIterator.next ();
-        selectionKeyIterator.remove ();
-        if (!selectionKey.isValid ()) {
+        SelectionKey selectionKey = selectionKeyIterator.next();
+        selectionKeyIterator.remove();
+        if (!selectionKey.isValid()) {
             return null;
         }
         return selectionKey;
     }
 
     public static <T> void isReadable(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain) throws IOException {
-        SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade (hummingbirdDomain.getHummingbirdEncoder (), hummingbirdDomain.getHummingbirdHandler (), hummingbirdDomain.getChannelHeartbeatDomainCache (), hummingbirdDomain.getHummingbirdDecoderCache (), socketChannel);
+        SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade(hummingbirdDomain.getHummingbirdEncoder(), hummingbirdDomain.getHummingbirdHandler(), hummingbirdDomain.getChannelHeartbeatDomainCache(), hummingbirdDomain.getHummingbirdDecoderCache(), socketChannel);
 
         int readOffsetInit = ServerSocketSelectorKeysFactoryConstant.READ_OFFSET_INIT;
         int readOffset = readOffsetInit;
 
-        ByteBufferFacade byteBufferFacade = ByteBufferFacadeChannelReadCache.getByteBufferFacade (socketChannel.toString ());
+        ByteBufferFacade byteBufferFacade = ByteBufferFacadeChannelReadCache.getByteBufferFacade(socketChannel.toString());
         while (readOffset == readOffsetInit || readOffset > 0) {
             try {
-                hummingbirdDomain.getChannelHeartbeatDomainCache ().readHeartbeat (socketChannelFacade);
-                readOffset = socketChannel.read (byteBufferFacade.getByteBuffer ());
-                boolean expansion = byteBufferFacade.isExpansion ();
-                read (hummingbirdDomain.getHummingbirdDecoder (), hummingbirdDomain.getHummingbirdHandler (), socketChannelFacade, byteBufferFacade);
-                byteBufferFacade.tryExpansion (expansion);
+                hummingbirdDomain.getChannelHeartbeatDomainCache().readHeartbeat(socketChannelFacade);
+                readOffset = socketChannel.read(byteBufferFacade.getByteBuffer());
+                boolean expansion = byteBufferFacade.isExpansion();
+                read(hummingbirdDomain.getHummingbirdDecoder(), hummingbirdDomain.getHummingbirdHandler(), socketChannelFacade, byteBufferFacade);
+                byteBufferFacade.tryExpansion(expansion);
             } catch (IOException e) {
-                log.error ("read Error", e);
+                log.error("read Error", e);
                 break;
             }
         }
         if (readOffset < 0) {
-            socketChannelFacade.close ();
+            socketChannelFacade.close();
         }
     }
 
     private static <T> void read(HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdHandler<T> hummingbirdHandler, SocketChannelFacade<T> socketChannelFacade, ByteBufferFacade byteBufferFacade) {
-        byteBufferFacade.flip ();
-        while (byteBufferFacade.readComplete ()) {
-            T message = hummingbirdDecoder.decoder (byteBufferFacade, socketChannelFacade);
+        byteBufferFacade.flip();
+        while (byteBufferFacade.readComplete()) {
+            T message = hummingbirdDecoder.decoder(byteBufferFacade, socketChannelFacade);
             if (message == null) {
                 break;
             }
-            hummingbirdHandler.channelMessage (socketChannelFacade, message);
+            hummingbirdHandler.channelMessage(socketChannelFacade, message);
         }
     }
 

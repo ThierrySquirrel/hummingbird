@@ -6,20 +6,20 @@
 
     <groupId>com.github.thierrysquirrel</groupId>
     <artifactId>hummingbird</artifactId>
-    <version>1.0.2.3-RELEASE</version>
+    <version>1.1.0.0-RELEASE</version>
 
     <name>hummingbird</name>
     <description>hummingbird</description>
     <url>https://github.com/ThierrySquirrel/hummingbird</url>
 
     <properties>
-        <java.version>11</java.version>
-        <guava.version>31.1-jre</guava.version>
-        <logback-classic.version>1.2.11</logback-classic.version>
-        <lombok.version>1.18.22</lombok.version>
-        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.3.2</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
+        <java.version>21</java.version>
+        <guava.version>33.2.1-jre</guava.version>
+        <logback-classic.version>1.5.6</logback-classic.version>
+        <lombok.version>1.18.34</lombok.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-javadoc-plugin.version>3.8.0</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
     </properties>
 
     <dependencies>
@@ -87,8 +87,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>

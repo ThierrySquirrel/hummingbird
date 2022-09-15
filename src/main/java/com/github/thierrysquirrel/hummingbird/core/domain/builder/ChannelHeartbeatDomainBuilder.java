@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.domain.builder;
 
 import com.github.thierrysquirrel.hummingbird.core.domain.ChannelHeartbeatDomain;
@@ -21,21 +21,21 @@ import com.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 /**
  * Classname: ChannelHeartbeatDomainBuilder
  * Description:
- * Date: 2021/7/29 20:28
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class ChannelHeartbeatDomainBuilder {
     private ChannelHeartbeatDomainBuilder() {
     }
 
     public static <T> ChannelHeartbeatDomain<T> builderChannelHeartbeatDomain(SocketChannelFacade<T> socketChannelFacade) {
-        ChannelHeartbeatDomain<T> channelHeartbeatDomain = new ChannelHeartbeatDomain<> ();
-        channelHeartbeatDomain.setSocketChannelFacade (socketChannelFacade);
-        long thisTime = System.currentTimeMillis ();
-        channelHeartbeatDomain.setReadHeartbeatTime (thisTime);
-        channelHeartbeatDomain.setWriteHeartbeatTime (thisTime);
+        ChannelHeartbeatDomain<T> channelHeartbeatDomain = new ChannelHeartbeatDomain<>();
+        channelHeartbeatDomain.setSocketChannelFacade(socketChannelFacade);
+        long thisTime = System.currentTimeMillis();
+        channelHeartbeatDomain.setReadHeartbeatTime(thisTime);
+        channelHeartbeatDomain.setWriteHeartbeatTime(thisTime);
         return channelHeartbeatDomain;
     }
 }

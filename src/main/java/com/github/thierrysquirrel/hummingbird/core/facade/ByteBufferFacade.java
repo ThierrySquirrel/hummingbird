@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.facade;
 
 import com.github.thierrysquirrel.hummingbird.core.facade.constant.ByteBufferFacadeConstant;
@@ -23,44 +23,44 @@ import java.nio.ByteBuffer;
 /**
  * Classname: ByteBufferFacade
  * Description:
- * Date: 2021/7/29 20:04
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 @Data
 public class ByteBufferFacade {
     private ByteBuffer byteBuffer;
     private int makePosition = -1;
 
     public boolean readComplete() {
-        int position = byteBuffer.position ();
-        int limit = byteBuffer.limit ();
+        int position = byteBuffer.position();
+        int limit = byteBuffer.limit();
         return position < limit;
     }
 
     public int length() {
-        return length (byteBuffer);
+        return length(byteBuffer);
     }
 
     public void flip() {
-        byteBuffer.flip ();
+        byteBuffer.flip();
 
     }
 
     public void reclaim() {
-        int length = length ();
+        int length = length();
         if (length <= 0) {
-            byteBuffer.clear ();
+            byteBuffer.clear();
             return;
         }
-        reallocateCapacity (byteBuffer.capacity ());
+        reallocateCapacity(byteBuffer.capacity());
     }
 
     public boolean isExpansion() {
-        int capacity = byteBuffer.capacity ();
+        int capacity = byteBuffer.capacity();
         double expansionThreshold = capacity * ByteBufferFacadeConstant.EXPANSION_THRESHOLD;
-        int position = byteBuffer.position ();
+        int position = byteBuffer.position();
         if (position < expansionThreshold) {
             return Boolean.FALSE;
         }
@@ -73,174 +73,174 @@ public class ByteBufferFacade {
 
     public void tryExpansion(boolean expansion) {
         if (expansion) {
-            expansion ();
+            expansion();
         } else {
-            reclaim ();
+            reclaim();
         }
     }
 
     public void clear() {
-        byteBuffer.clear ();
-        clearMake ();
+        byteBuffer.clear();
+        clearMake();
     }
 
     public byte[] getAllBytes() {
-        int length = length ();
+        int length = length();
         byte[] allBytes = new byte[length];
-        byteBuffer.get (allBytes);
+        byteBuffer.get(allBytes);
         return allBytes;
     }
 
     public void getByteBuffer(ByteBuffer value) {
-        int valueLength = length (value);
-        int position = byteBuffer.position ();
+        int valueLength = length(value);
+        int position = byteBuffer.position();
         int readLimit = position + valueLength;
-        int makeLimit = byteBuffer.limit ();
+        int makeLimit = byteBuffer.limit();
 
-        byteBuffer.limit (readLimit);
-        value.put (byteBuffer);
-        byteBuffer.limit (makeLimit);
+        byteBuffer.limit(readLimit);
+        value.put(byteBuffer);
+        byteBuffer.limit(makeLimit);
     }
 
     public void make() {
-        setMakePosition (byteBuffer.position ());
+        setMakePosition(byteBuffer.position());
     }
 
     public void reset() {
-        byteBuffer.position (getMakePosition ());
+        byteBuffer.position(getMakePosition());
     }
 
     public void clearMake() {
-        setMakePosition (-1);
+        setMakePosition(-1);
     }
 
     public void automaticExpansion() {
-        if (isExpansion ()) {
-            byteBuffer.flip ();
-            expansion ();
+        if (isExpansion()) {
+            byteBuffer.flip();
+            expansion();
         }
     }
 
     private void cyclicExpansion(int valueSize) {
-        while (valueSize > length ()) {
-            byteBuffer.flip ();
-            expansion ();
+        while (valueSize > length()) {
+            byteBuffer.flip();
+            expansion();
         }
     }
 
     private void expansion() {
-        int capacity = byteBuffer.capacity ();
+        int capacity = byteBuffer.capacity();
         int newSize = capacity * ByteBufferFacadeConstant.EXPANSION_SIZE;
-        reallocateCapacity (newSize);
+        reallocateCapacity(newSize);
     }
 
     private void reallocateCapacity(int capacity) {
-        ByteBuffer newBytebuffer = ByteBuffer.allocateDirect (capacity);
-        newBytebuffer.put (byteBuffer);
+        ByteBuffer newBytebuffer = ByteBuffer.allocateDirect(capacity);
+        newBytebuffer.put(byteBuffer);
         byteBuffer = newBytebuffer;
     }
 
     private int length(ByteBuffer value) {
-        int position = value.position ();
-        int limit = value.limit ();
+        int position = value.position();
+        int limit = value.limit();
         return limit - position;
     }
 
     public void put(ByteBuffer value) {
-        int valueSize = length (value);
-        cyclicExpansion (valueSize);
-        byteBuffer.put (value);
+        int valueSize = length(value);
+        cyclicExpansion(valueSize);
+        byteBuffer.put(value);
     }
 
     public void putString(String value) {
-        putBytes (value.getBytes ());
+        putBytes(value.getBytes());
     }
 
     public void putBytes(byte[] value) {
-        cyclicExpansion (value.length);
-        byteBuffer.put (value);
+        cyclicExpansion(value.length);
+        byteBuffer.put(value);
     }
 
     public void putByte(byte value) {
-        automaticExpansion ();
-        byteBuffer.put (value);
+        automaticExpansion();
+        byteBuffer.put(value);
     }
 
     public void putShort(short value) {
-        automaticExpansion ();
-        byteBuffer.putShort (value);
+        automaticExpansion();
+        byteBuffer.putShort(value);
     }
 
     public void putInt(int value) {
-        automaticExpansion ();
-        byteBuffer.putInt (value);
+        automaticExpansion();
+        byteBuffer.putInt(value);
     }
 
     public void putLong(long value) {
-        automaticExpansion ();
-        byteBuffer.putLong (value);
+        automaticExpansion();
+        byteBuffer.putLong(value);
     }
 
     public void putFloat(float value) {
-        automaticExpansion ();
-        byteBuffer.putFloat (value);
+        automaticExpansion();
+        byteBuffer.putFloat(value);
     }
 
     public void putDouble(double value) {
-        automaticExpansion ();
-        byteBuffer.putDouble (value);
+        automaticExpansion();
+        byteBuffer.putDouble(value);
     }
 
     public void putChar(char value) {
-        automaticExpansion ();
-        byteBuffer.putChar (value);
+        automaticExpansion();
+        byteBuffer.putChar(value);
     }
 
     public boolean tryGet(ByteBuffer value) {
-        int valueSize = length (value);
-        int length = length ();
+        int valueSize = length(value);
+        int length = length();
         if (valueSize > length) {
-            value.put (byteBuffer);
+            value.put(byteBuffer);
             return Boolean.FALSE;
         } else {
-            int makeLimit = byteBuffer.limit ();
-            int readSize = valueSize + byteBuffer.position ();
-            byteBuffer.limit (readSize);
-            value.put (byteBuffer);
-            byteBuffer.limit (makeLimit);
+            int makeLimit = byteBuffer.limit();
+            int readSize = valueSize + byteBuffer.position();
+            byteBuffer.limit(readSize);
+            value.put(byteBuffer);
+            byteBuffer.limit(makeLimit);
             return Boolean.TRUE;
         }
     }
 
     public byte getByte() {
-        return byteBuffer.get ();
+        return byteBuffer.get();
     }
 
     public void getBytes(byte[] value) {
-        byteBuffer.get (value);
+        byteBuffer.get(value);
     }
 
     public short getShort() {
-        return byteBuffer.getShort ();
+        return byteBuffer.getShort();
     }
 
     public int getInt() {
-        return byteBuffer.getInt ();
+        return byteBuffer.getInt();
     }
 
     public long getLong() {
-        return byteBuffer.getLong ();
+        return byteBuffer.getLong();
     }
 
     public float getFloat() {
-        return byteBuffer.getFloat ();
+        return byteBuffer.getFloat();
     }
 
     public double getDouble() {
-        return byteBuffer.getDouble ();
+        return byteBuffer.getDouble();
     }
 
     public char getChar() {
-        return byteBuffer.getChar ();
+        return byteBuffer.getChar();
     }
 }

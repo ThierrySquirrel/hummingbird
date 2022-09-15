@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.server.factory.execution;
 
 import com.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
@@ -30,28 +30,28 @@ import java.util.Objects;
 /**
  * Classname: ServerSocketSelectorKeysFactoryExecution
  * Description:
- * Date: 2021/7/29 22:08
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class ServerSocketSelectorKeysFactoryExecution {
     private ServerSocketSelectorKeysFactoryExecution() {
     }
 
     public static <T> void serverSocketSelectorKeys(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain, Selector selector) throws IOException {
-        Iterator<SelectionKey> selectionKeyIterator = selector.selectedKeys ().iterator ();
-        while (selectionKeyIterator.hasNext ()) {
-            SelectionKey selectionKey = SocketSelectorKeysFactory.getSelectionKey (selectionKeyIterator);
-            if (Objects.isNull (selectionKey)) {
+        Iterator<SelectionKey> selectionKeyIterator = selector.selectedKeys().iterator();
+        while (selectionKeyIterator.hasNext()) {
+            SelectionKey selectionKey = SocketSelectorKeysFactory.getSelectionKey(selectionKeyIterator);
+            if (Objects.isNull(selectionKey)) {
                 return;
             }
-            if (selectionKey.isAcceptable ()) {
-                ServerSocketSelectorKeysFactory.isAcceptable (serverSocketChannel, selector);
+            if (selectionKey.isAcceptable()) {
+                ServerSocketSelectorKeysFactory.isAcceptable(serverSocketChannel, selector);
                 continue;
             }
-            if (selectionKey.isReadable ()) {
-                SocketSelectorKeysFactory.isReadable ((SocketChannel) selectionKey.channel (), hummingbirdDomain);
+            if (selectionKey.isReadable()) {
+                SocketSelectorKeysFactory.isReadable((SocketChannel) selectionKey.channel(), hummingbirdDomain);
             }
         }
     }

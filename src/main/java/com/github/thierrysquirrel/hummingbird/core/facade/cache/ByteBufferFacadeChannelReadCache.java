@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.facade.cache;
 
 import com.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
@@ -24,22 +24,22 @@ import java.util.Map;
 /**
  * Classname: ByteBufferFacadeChannelReadCache
  * Description:
- * Date: 2021/7/29 20:13
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class ByteBufferFacadeChannelReadCache {
-    private static final Map<String, ByteBufferFacade> CHANNEL_READ_CACHE = Maps.newConcurrentMap ();
+    private static final Map<String, ByteBufferFacade> CHANNEL_READ_CACHE = Maps.newConcurrentMap();
 
     private ByteBufferFacadeChannelReadCache() {
     }
 
     public static ByteBufferFacade getByteBufferFacade(String socketChannelString) {
-        return CHANNEL_READ_CACHE.computeIfAbsent (socketChannelString, key -> ByteBufferFacadeBuilder.builderDirectByteBufferFacade ());
+        return CHANNEL_READ_CACHE.computeIfAbsent(socketChannelString, key -> ByteBufferFacadeBuilder.builderDirectByteBufferFacade());
     }
 
     public static void removeByteBufferFacade(String socketChannelString) {
-        CHANNEL_READ_CACHE.remove (socketChannelString);
+        CHANNEL_READ_CACHE.remove(socketChannelString);
     }
 }

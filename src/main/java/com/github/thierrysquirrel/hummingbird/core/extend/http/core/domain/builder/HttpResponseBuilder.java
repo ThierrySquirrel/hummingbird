@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.builder;
 
 import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpResponse;
@@ -23,27 +23,28 @@ import com.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.const
 /**
  * Classname: HttpResponseBuilder
  * Description:
- * Date: 2021/9/10 18:12
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 public class HttpResponseBuilder {
     private HttpResponseBuilder() {
     }
 
     public static HttpResponse builderHttpResponse(String httpEdition, String httpStatusCode, String httpStatus) {
-        HttpResponse httpResponse = new HttpResponse ();
-        httpResponse.setHttpEdition (httpEdition);
-        httpResponse.setHttpStatusCode (httpStatusCode);
-        httpResponse.setHttpStatus (httpStatus);
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setHttpEdition(httpEdition);
+        httpResponse.setHttpStatusCode(httpStatusCode);
+        httpResponse.setHttpStatus(httpStatus);
         return httpResponse;
     }
-    public static HttpResponse builderDefault(){
-        HttpResponse httpResponse = new HttpResponse ();
-        httpResponse.setHttpEdition (HttpEditionConstant.DEFAULT_EDITION);
-        httpResponse.setHttpStatusCode (HttpStatusCodeConstant.SUCCESS);
-        httpResponse.setHttpStatus (HttpStatusConstant.OK);
+
+    public static HttpResponse builderDefault() {
+        HttpResponse httpResponse = new HttpResponse();
+        httpResponse.setHttpEdition(HttpEditionConstant.DEFAULT_EDITION);
+        httpResponse.setHttpStatusCode(HttpStatusCodeConstant.SUCCESS);
+        httpResponse.setHttpStatus(HttpStatusConstant.OK);
         return httpResponse;
     }
 }

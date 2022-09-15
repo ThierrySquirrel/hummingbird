@@ -1,5 +1,5 @@
 /**
- * Copyright 2021 the original author or authors.
+ * Copyright 2024/8/8 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ **/
 package com.github.thierrysquirrel.hummingbird.core.server.factory;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,21 +23,21 @@ import java.nio.channels.*;
 /**
  * Classname: ServerSocketSelectorKeysFactory
  * Description:
- * Date: 2021/7/29 22:08
+ * Date:2024/8/8
  *
  * @author ThierrySquirrel
- * @since JDK 11
- */
+ * @since JDK21
+ **/
 @Slf4j
 public class ServerSocketSelectorKeysFactory {
     private ServerSocketSelectorKeysFactory() {
     }
 
     public static void isAcceptable(ServerSocketChannel serverSocketChannel, Selector selector) throws IOException {
-        var accept = serverSocketChannel.accept ();
+        var accept = serverSocketChannel.accept();
         if (accept != null) {
-            accept.configureBlocking (Boolean.FALSE);
-            accept.register (selector, SelectionKey.OP_READ);
+            accept.configureBlocking(Boolean.FALSE);
+            accept.register(selector, SelectionKey.OP_READ);
         }
     }
 
