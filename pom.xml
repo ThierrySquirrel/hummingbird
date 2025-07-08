@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.thierrysquirrel</groupId>
+    <groupId>io.github.thierrysquirrel</groupId>
     <artifactId>hummingbird</artifactId>
-    <version>1.1.0.0-RELEASE</version>
+    <version>1.2.0.0-RELEASE</version>
 
     <name>hummingbird</name>
     <description>hummingbird</description>
@@ -14,12 +14,13 @@
 
     <properties>
         <java.version>21</java.version>
-        <guava.version>33.2.1-jre</guava.version>
-        <logback-classic.version>1.5.6</logback-classic.version>
-        <lombok.version>1.18.34</lombok.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.8.0</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
+        <guava.version>33.4.8-jre</guava.version>
+        <logback-classic.version>1.5.18</logback-classic.version>
+        <lombok.version>1.18.38</lombok.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -68,18 +69,6 @@
         <tag>v${project.version}</tag>
     </scm>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <name>Maven Central Staging Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -118,6 +107,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${central-publishing-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>ossrh-staging-api</publishingServerId>
+                </configuration>
             </plugin>
         </plugins>
     </build>

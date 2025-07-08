@@ -16,8 +16,8 @@ Tcp开发工具包
 <!--在pom.xml中添加依赖-->
         <dependency>
             <artifactId>hummingbird</artifactId>
-            <groupId>com.github.thierrysquirrel</groupId>
-            <version>1.1.0.0-RELEASE</version>
+            <groupId>io.github.thierrysquirrel</groupId>
+            <version>1.2.0.0-RELEASE</version>
         </dependency>
 ```
 
@@ -227,7 +227,7 @@ public class HttpServerHeader implements HummingbirdHandler<HttpRequestContext> 
         Map<String, String> httpHeader = message.getHttpHeader ();
         boolean isFormData = HttpHeaderFactory.equalsIgnoreCaseContentType (httpHeader, HttpHeaderValueConstant.FORM_DATA);
         if(isFormData){
-            Map<String, HttpFormData> formDataBody = HttpServerBodyDecoderFactory.builderFormUrlencoded (message);
+            Map<String, HttpFormData> formDataBody = HttpServerBodyDecoderFactory.builderFormData(message);
             for (Map.Entry<String, HttpFormData> dataEntry : formDataBody.entrySet ()) {
                 HttpFormData value = dataEntry.getValue ();
                 if(value.isFile ()){
