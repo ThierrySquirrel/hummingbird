@@ -16,7 +16,6 @@
 package io.github.thierrysquirrel.hummingbird.core.facade;
 
 import io.github.thierrysquirrel.hummingbird.core.facade.constant.ByteBufferFacadeConstant;
-import lombok.Data;
 
 import java.nio.ByteBuffer;
 
@@ -28,7 +27,6 @@ import java.nio.ByteBuffer;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class ByteBufferFacade {
     private ByteBuffer byteBuffer;
     private int makePosition = -1;
@@ -242,5 +240,29 @@ public class ByteBufferFacade {
 
     public char getChar() {
         return byteBuffer.getChar();
+    }
+
+    public ByteBuffer getByteBuffer() {
+        return byteBuffer;
+    }
+
+    public void setByteBuffer(ByteBuffer byteBuffer) {
+        this.byteBuffer = byteBuffer;
+    }
+
+    public int getMakePosition() {
+        return makePosition;
+    }
+
+    public void setMakePosition(int makePosition) {
+        this.makePosition = makePosition;
+    }
+
+    @Override
+    public String toString() {
+        return "ByteBufferFacade{" +
+                "byteBuffer=" + byteBuffer +
+                ", makePosition=" + makePosition +
+                '}';
     }
 }

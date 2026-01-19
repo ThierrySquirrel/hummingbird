@@ -15,7 +15,6 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.server.factory.domain;
 
-import lombok.Data;
 
 import java.nio.ByteBuffer;
 
@@ -27,11 +26,61 @@ import java.nio.ByteBuffer;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class HttpFormData {
     private String value;
     private boolean isFile;
     private String fileName;
     private String fileContentType;
     private ByteBuffer fileValue;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public boolean isFile() {
+        return isFile;
+    }
+
+    public void setFile(boolean file) {
+        isFile = file;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileContentType() {
+        return fileContentType;
+    }
+
+    public void setFileContentType(String fileContentType) {
+        this.fileContentType = fileContentType;
+    }
+
+    public ByteBuffer getFileValue() {
+        return fileValue;
+    }
+
+    public void setFileValue(ByteBuffer fileValue) {
+        this.fileValue = fileValue;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpFormData{" +
+                "value='" + value + '\'' +
+                ", isFile=" + isFile +
+                ", fileName='" + fileName + '\'' +
+                ", fileContentType='" + fileContentType + '\'' +
+                ", fileValue=" + fileValue +
+                '}';
+    }
 }

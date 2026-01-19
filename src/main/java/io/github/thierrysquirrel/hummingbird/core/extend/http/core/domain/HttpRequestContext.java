@@ -15,8 +15,6 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain;
 
-import lombok.Data;
-
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -28,10 +26,51 @@ import java.util.Map;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class HttpRequestContext {
     private HttpRequest httpRequest;
     private HttpResponse httpResponse;
     private Map<String, String> httpHeader;
     private ByteBuffer httpBody;
+
+    public HttpRequest getHttpRequest() {
+        return httpRequest;
+    }
+
+    public void setHttpRequest(HttpRequest httpRequest) {
+        this.httpRequest = httpRequest;
+    }
+
+    public HttpResponse getHttpResponse() {
+        return httpResponse;
+    }
+
+    public void setHttpResponse(HttpResponse httpResponse) {
+        this.httpResponse = httpResponse;
+    }
+
+    public Map<String, String> getHttpHeader() {
+        return httpHeader;
+    }
+
+    public void setHttpHeader(Map<String, String> httpHeader) {
+        this.httpHeader = httpHeader;
+    }
+
+    public ByteBuffer getHttpBody() {
+        return httpBody;
+    }
+
+    public void setHttpBody(ByteBuffer httpBody) {
+        this.httpBody = httpBody;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpRequestContext{" +
+                "httpRequest=" + httpRequest +
+                ", httpResponse=" + httpResponse +
+                ", httpHeader=" + httpHeader +
+                ", httpBody=" + httpBody +
+                '}';
+    }
 }

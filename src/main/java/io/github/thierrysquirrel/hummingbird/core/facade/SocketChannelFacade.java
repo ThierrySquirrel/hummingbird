@@ -22,12 +22,12 @@ import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatD
 import io.github.thierrysquirrel.hummingbird.core.facade.cache.ByteBufferFacadeChannelReadCache;
 import io.github.thierrysquirrel.hummingbird.core.facade.cache.ByteBufferFacadeChannelWriteCache;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: SocketChannelFacade
@@ -37,9 +37,10 @@ import java.nio.channels.SocketChannel;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
-@Slf4j
 public class SocketChannelFacade<T> {
+
+    private static final Logger logger = Logger.getLogger(SocketChannelFacade.class.getName());
+
     private HummingbirdEncoder<T> hummingbirdEncoder;
     private HummingbirdHandler<T> hummingbirdHandler;
     private ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache;
@@ -88,7 +89,8 @@ public class SocketChannelFacade<T> {
             try {
                 socketChannel.close();
             } catch (IOException e) {
-                log.error("close Error", e);
+                String logMsg = "close Error";
+                logger.log(Level.WARNING, logMsg, e);
             }
         }
     }
@@ -107,5 +109,74 @@ public class SocketChannelFacade<T> {
 
     public boolean isOpen() {
         return socketChannel.isOpen();
+    }
+
+    public HummingbirdEncoder<T> getHummingbirdEncoder() {
+        return hummingbirdEncoder;
+    }
+
+    public void setHummingbirdEncoder(HummingbirdEncoder<T> hummingbirdEncoder) {
+        this.hummingbirdEncoder = hummingbirdEncoder;
+    }
+
+    public HummingbirdHandler<T> getHummingbirdHandler() {
+        return hummingbirdHandler;
+    }
+
+    public void setHummingbirdHandler(HummingbirdHandler<T> hummingbirdHandler) {
+        this.hummingbirdHandler = hummingbirdHandler;
+    }
+
+    public ChannelHeartbeatDomainCache<T> getChannelHeartbeatDomainCache() {
+        return channelHeartbeatDomainCache;
+    }
+
+    public void setChannelHeartbeatDomainCache(ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
+        this.channelHeartbeatDomainCache = channelHeartbeatDomainCache;
+    }
+
+    public HummingbirdDecoderCache<T> getHummingbirdDecoderCache() {
+        return hummingbirdDecoderCache;
+    }
+
+    public void setHummingbirdDecoderCache(HummingbirdDecoderCache<T> hummingbirdDecoderCache) {
+        this.hummingbirdDecoderCache = hummingbirdDecoderCache;
+    }
+
+    public SocketChannel getSocketChannel() {
+        return socketChannel;
+    }
+
+    public void setSocketChannel(SocketChannel socketChannel) {
+        this.socketChannel = socketChannel;
+    }
+
+    public SocketAddress getRemoteAddress() {
+        return remoteAddress;
+    }
+
+    public void setRemoteAddress(SocketAddress remoteAddress) {
+        this.remoteAddress = remoteAddress;
+    }
+
+    public SocketAddress getLocalAddress() {
+        return localAddress;
+    }
+
+    public void setLocalAddress(SocketAddress localAddress) {
+        this.localAddress = localAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "SocketChannelFacade{" +
+                "hummingbirdEncoder=" + hummingbirdEncoder +
+                ", hummingbirdHandler=" + hummingbirdHandler +
+                ", channelHeartbeatDomainCache=" + channelHeartbeatDomainCache +
+                ", hummingbirdDecoderCache=" + hummingbirdDecoderCache +
+                ", socketChannel=" + socketChannel +
+                ", remoteAddress=" + remoteAddress +
+                ", localAddress=" + localAddress +
+                '}';
     }
 }

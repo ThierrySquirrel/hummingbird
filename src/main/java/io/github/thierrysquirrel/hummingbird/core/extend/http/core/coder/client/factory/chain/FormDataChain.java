@@ -23,7 +23,6 @@ import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRe
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderKeyConstant;
 import io.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 import io.github.thierrysquirrel.hummingbird.core.facade.builder.ByteBufferFacadeBuilder;
-import lombok.Data;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +36,6 @@ import java.nio.ByteBuffer;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class FormDataChain {
     private HttpRequestContext httpRequestContext;
     private String beginBoundary;
@@ -143,5 +141,47 @@ public class FormDataChain {
         stringBuilder.append(text);
         stringBuilder.append(FormDataChainConstant.QUOTATION_MARK);
         return stringBuilder.toString();
+    }
+
+    public HttpRequestContext getHttpRequestContext() {
+        return httpRequestContext;
+    }
+
+    public void setHttpRequestContext(HttpRequestContext httpRequestContext) {
+        this.httpRequestContext = httpRequestContext;
+    }
+
+    public String getBeginBoundary() {
+        return beginBoundary;
+    }
+
+    public void setBeginBoundary(String beginBoundary) {
+        this.beginBoundary = beginBoundary;
+    }
+
+    public String getEndBoundary() {
+        return endBoundary;
+    }
+
+    public void setEndBoundary(String endBoundary) {
+        this.endBoundary = endBoundary;
+    }
+
+    public ByteBufferFacade getHttpBody() {
+        return httpBody;
+    }
+
+    public void setHttpBody(ByteBufferFacade httpBody) {
+        this.httpBody = httpBody;
+    }
+
+    @Override
+    public String toString() {
+        return "FormDataChain{" +
+                "httpRequestContext=" + httpRequestContext +
+                ", beginBoundary='" + beginBoundary + '\'' +
+                ", endBoundary='" + endBoundary + '\'' +
+                ", httpBody=" + httpBody +
+                '}';
     }
 }

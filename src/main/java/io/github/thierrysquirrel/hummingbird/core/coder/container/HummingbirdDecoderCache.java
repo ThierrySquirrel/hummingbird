@@ -15,9 +15,9 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.coder.container;
 
-import com.google.common.collect.Maps;
+import io.github.thierrysquirrel.jellyfish.concurrency.map.hash.ConcurrencyHashMap;
 
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * Classname: HummingbirdDecoderCache
@@ -28,10 +28,14 @@ import java.util.Map;
  * @since JDK21
  **/
 public class HummingbirdDecoderCache<T> {
-    private final Map<String, T> messageDecoderCache = Maps.newConcurrentMap();
+
+    private final ConcurrencyHashMap<String, T> messageDecoderCache = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
 
     public void putMessageDecoderCache(String socketChannelString, T message) {
-        messageDecoderCache.computeIfAbsent(socketChannelString, key -> message);
+        T value = messageDecoderCache.get(socketChannelString);
+        if (Objects.isNull(value)) {
+            messageDecoderCache.set(socketChannelString, message);
+        }
     }
 
     public T getMessageDecoderCache(String socketChannelString) {
@@ -39,6 +43,6 @@ public class HummingbirdDecoderCache<T> {
     }
 
     public void remove(String socketChannelString) {
-        messageDecoderCache.remove(socketChannelString);
+        messageDecoderCache.deleteValue(socketChannelString);
     }
 }

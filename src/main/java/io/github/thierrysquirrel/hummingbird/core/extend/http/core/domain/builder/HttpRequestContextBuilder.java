@@ -21,9 +21,9 @@ import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRe
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpEditionConstant;
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderKeyConstant;
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderValueConstant;
-import com.google.common.collect.Maps;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -89,7 +89,7 @@ public class HttpRequestContextBuilder {
     }
 
     private static void builderDefaultHttpHeader(HttpRequestContext httpRequestContext) {
-        Map<String, String> httpHeader = Maps.newConcurrentMap();
+        Map<String, String> httpHeader = new HashMap<>();
         httpHeader.put(HttpHeaderKeyConstant.CONNECTION, HttpHeaderValueConstant.KEEP_ALIVE);
         httpRequestContext.setHttpHeader(httpHeader);
     }

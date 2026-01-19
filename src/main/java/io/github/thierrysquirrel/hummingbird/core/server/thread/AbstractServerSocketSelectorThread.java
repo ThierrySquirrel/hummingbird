@@ -16,11 +16,11 @@
 package io.github.thierrysquirrel.hummingbird.core.server.thread;
 
 import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.channels.ServerSocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: AbstractServerSocketSelectorThread
@@ -30,9 +30,10 @@ import java.nio.channels.ServerSocketChannel;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
-@Slf4j
+
 public abstract class AbstractServerSocketSelectorThread<T> implements Runnable {
+
+    private static final Logger logger = Logger.getLogger(AbstractServerSocketSelectorThread.class.getName());
 
     private ServerSocketChannel serverSocketChannel;
     private HummingbirdDomain<T> hummingbirdDomain;
@@ -56,7 +57,8 @@ public abstract class AbstractServerSocketSelectorThread<T> implements Runnable 
         try {
             serverSocketSelector(this.serverSocketChannel, this.hummingbirdDomain);
         } catch (Exception e) {
-            log.error("serverSocketSelector Error", e);
+            String logMsg = "serverSocketSelector Error";
+            logger.log(Level.WARNING, logMsg, e);
         }
     }
 }

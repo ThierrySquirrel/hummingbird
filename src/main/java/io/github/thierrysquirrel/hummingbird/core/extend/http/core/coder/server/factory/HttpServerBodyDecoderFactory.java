@@ -26,11 +26,12 @@ import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRe
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.factory.HttpHeaderFactory;
 import io.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 import io.github.thierrysquirrel.hummingbird.core.facade.builder.ByteBufferFacadeBuilder;
-import com.google.common.collect.Maps;
-import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: HttpServerBodyDecoderFactory
@@ -40,14 +41,17 @@ import java.util.Map;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Slf4j
 public class HttpServerBodyDecoderFactory {
+
+    private static final Logger logger = Logger.getLogger(HttpServerBodyDecoderFactory.class.getName());
+
+
     private HttpServerBodyDecoderFactory() {
     }
 
     public static Map<String, HttpFormData> builderFormData(HttpRequestContext httpRequestContext) {
         String boundary = HttpHeaderFactory.getBoundary(httpRequestContext.getHttpHeader());
-        Map<String, HttpFormData> formDataMap = Maps.newConcurrentMap();
+        Map<String, HttpFormData> formDataMap = new HashMap<>();
         if (boundary == null) {
             return formDataMap;
         }
@@ -92,7 +96,8 @@ public class HttpServerBodyDecoderFactory {
     private static void putFormDataMap(ByteBufferFacade byteBufferFacade, Map<String, HttpFormData> formDataMap, String beginBoundary, String endBoundary) {
         String contentDisposition = HttpDecoderFactory.readLine(byteBufferFacade);
         if (contentDisposition == null) {
-            log.error("contentDisposition Error");
+            String logMsg="contentDisposition Error";
+            logger.log(Level.WARNING, logMsg);
             return;
         }
         String[] splitContentDisposition = contentDisposition.split(HttpFormDataCoderConstant.SEMICOLON_STRING);
@@ -104,7 +109,8 @@ public class HttpServerBodyDecoderFactory {
 
             String fileContentType = HttpDecoderFactory.readLine(byteBufferFacade);
             if (fileContentType == null) {
-                log.error("fileContentType Error");
+                String logMsg="fileContentType Error";
+                logger.log(Level.WARNING, logMsg);
                 return;
             }
             String[] splitContentType = fileContentType.split(HttpFormDataCoderConstant.COLON);

@@ -24,15 +24,10 @@ package io.github.thierrysquirrel.hummingbird.core.builder.constant;
  * @since JDK21
  **/
 public final class ThreadPoolExecutorBuilderConstant {
-    public static final int KEEP_ALIVE_TIME = 0;
 
-    public static final String CHANNEL_HEARTBEAT = "channel_heartbeat-thread-%d";
-    public static final int CHANNEL_HEARTBEAT_CORE_POOL_SIZE = 1;
-    public static final long CHANNEL_HEARTBEAT_DELAY = 256;
+    public static final int CHANNEL_HEARTBEAT_DELAY = 256;
 
-    public static final String HUMMINGBIRD_SERVER = "hummingbird-server-thread-%d";
     public static final int HUMMINGBIRD_SERVER_CORE_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
-    public static final int HUMMINGBIRD_SERVER_MAXIMUM_POOL_SIZE = Runtime.getRuntime().availableProcessors() * 2;
 
     private ThreadPoolExecutorBuilderConstant() {
     }

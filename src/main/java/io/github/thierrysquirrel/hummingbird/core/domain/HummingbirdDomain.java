@@ -20,7 +20,6 @@ import io.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
 import io.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
 import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
-import lombok.Data;
 
 /**
  * Classname: HummingbirdDomain
@@ -30,11 +29,61 @@ import lombok.Data;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class HummingbirdDomain<T> {
     private HummingbirdDecoder<T> hummingbirdDecoder;
     private HummingbirdEncoder<T> hummingbirdEncoder;
     private HummingbirdHandler<T> hummingbirdHandler;
     private ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache;
     private HummingbirdDecoderCache<T> hummingbirdDecoderCache;
+
+    public HummingbirdDecoder<T> getHummingbirdDecoder() {
+        return hummingbirdDecoder;
+    }
+
+    public void setHummingbirdDecoder(HummingbirdDecoder<T> hummingbirdDecoder) {
+        this.hummingbirdDecoder = hummingbirdDecoder;
+    }
+
+    public HummingbirdEncoder<T> getHummingbirdEncoder() {
+        return hummingbirdEncoder;
+    }
+
+    public void setHummingbirdEncoder(HummingbirdEncoder<T> hummingbirdEncoder) {
+        this.hummingbirdEncoder = hummingbirdEncoder;
+    }
+
+    public HummingbirdHandler<T> getHummingbirdHandler() {
+        return hummingbirdHandler;
+    }
+
+    public void setHummingbirdHandler(HummingbirdHandler<T> hummingbirdHandler) {
+        this.hummingbirdHandler = hummingbirdHandler;
+    }
+
+    public ChannelHeartbeatDomainCache<T> getChannelHeartbeatDomainCache() {
+        return channelHeartbeatDomainCache;
+    }
+
+    public void setChannelHeartbeatDomainCache(ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
+        this.channelHeartbeatDomainCache = channelHeartbeatDomainCache;
+    }
+
+    public HummingbirdDecoderCache<T> getHummingbirdDecoderCache() {
+        return hummingbirdDecoderCache;
+    }
+
+    public void setHummingbirdDecoderCache(HummingbirdDecoderCache<T> hummingbirdDecoderCache) {
+        this.hummingbirdDecoderCache = hummingbirdDecoderCache;
+    }
+
+    @Override
+    public String toString() {
+        return "HummingbirdDomain{" +
+                "hummingbirdDecoder=" + hummingbirdDecoder +
+                ", hummingbirdEncoder=" + hummingbirdEncoder +
+                ", hummingbirdHandler=" + hummingbirdHandler +
+                ", channelHeartbeatDomainCache=" + channelHeartbeatDomainCache +
+                ", hummingbirdDecoderCache=" + hummingbirdDecoderCache +
+                '}';
+    }
 }

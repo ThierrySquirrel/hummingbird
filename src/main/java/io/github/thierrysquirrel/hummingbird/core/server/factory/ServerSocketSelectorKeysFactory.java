@@ -15,8 +15,6 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.server.factory;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.nio.channels.*;
 
@@ -28,7 +26,6 @@ import java.nio.channels.*;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Slf4j
 public class ServerSocketSelectorKeysFactory {
     private ServerSocketSelectorKeysFactory() {
     }

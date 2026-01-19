@@ -19,9 +19,11 @@ import io.github.thierrysquirrel.hummingbird.core.domain.ChannelHeartbeatDomain;
 import io.github.thierrysquirrel.hummingbird.core.domain.builder.ChannelHeartbeatDomainBuilder;
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
-import com.google.common.collect.Maps;
+import io.github.thierrysquirrel.jellyfish.concurrency.map.hash.ConcurrencyHashMap;
 
 import java.util.Map;
+import java.util.Objects;
+
 
 /**
  * Classname: ChannelHeartbeatDomainCache
@@ -32,7 +34,7 @@ import java.util.Map;
  * @since JDK21
  **/
 public class ChannelHeartbeatDomainCache<T> {
-    private final Map<String, ChannelHeartbeatDomain<T>> heartbeatDomainMap = Maps.newConcurrentMap();
+    private final ConcurrencyHashMap<String, ChannelHeartbeatDomain<T>> heartbeatDomainMap = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
     private final HummingbirdHandler<T> hummingbirdHandler;
     private final long readHeartbeatTime;
     private final long writeHeartbeatTime;
@@ -55,7 +57,8 @@ public class ChannelHeartbeatDomainCache<T> {
 
     public void heartbeat() {
         long thisTime = System.currentTimeMillis();
-        for (Map.Entry<String, ChannelHeartbeatDomain<T>> entry : heartbeatDomainMap.entrySet()) {
+        Map<String, ChannelHeartbeatDomain<T>> mapAll = heartbeatDomainMap.getAll();
+        for (Map.Entry<String, ChannelHeartbeatDomain<T>> entry : mapAll.entrySet()) {
             ChannelHeartbeatDomain<T> channelHeartbeatDomain = entry.getValue();
             SocketChannelFacade<T> socketChannelFacade = channelHeartbeatDomain.getSocketChannelFacade();
 
@@ -78,11 +81,18 @@ public class ChannelHeartbeatDomainCache<T> {
     }
 
     public void remove(String socketChannelString) {
-        heartbeatDomainMap.remove(socketChannelString);
+        heartbeatDomainMap.deleteValue(socketChannelString);
     }
 
     private ChannelHeartbeatDomain<T> getChannelHeartbeatDomain(SocketChannelFacade<T> socketChannelFacade) {
-        return heartbeatDomainMap.computeIfAbsent(socketChannelFacade.getSocketChannel().toString(), key -> ChannelHeartbeatDomainBuilder.builderChannelHeartbeatDomain(socketChannelFacade));
+        String key = socketChannelFacade.getSocketChannel().toString();
+
+        ChannelHeartbeatDomain<T> value = heartbeatDomainMap.get(key);
+        if (Objects.isNull(value)) {
+            value = ChannelHeartbeatDomainBuilder.builderChannelHeartbeatDomain(socketChannelFacade);
+            heartbeatDomainMap.set(key, value);
+        }
+        return value;
     }
 
 }

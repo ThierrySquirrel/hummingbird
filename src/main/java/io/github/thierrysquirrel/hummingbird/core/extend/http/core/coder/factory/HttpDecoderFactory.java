@@ -26,9 +26,9 @@ import io.github.thierrysquirrel.hummingbird.core.extend.http.core.factory.HttpH
 import io.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import io.github.thierrysquirrel.hummingbird.core.facade.builder.ByteBufferFacadeBuilder;
-import com.google.common.collect.Maps;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -98,7 +98,7 @@ public class HttpDecoderFactory {
     }
 
     private static HttpRequestContext readHttpHeader(ByteBufferFacade byteBufferFacade, HttpRequestContext httpRequestContext) {
-        Map<String, String> readHttpHeader = Maps.newConcurrentMap();
+        Map<String, String> readHttpHeader = new HashMap<>();
         while (true) {
             String readData = readLine(byteBufferFacade);
             if (Objects.isNull(readData)) {

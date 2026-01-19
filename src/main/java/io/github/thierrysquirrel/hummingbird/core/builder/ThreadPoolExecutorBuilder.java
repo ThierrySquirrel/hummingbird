@@ -16,9 +16,8 @@
 package io.github.thierrysquirrel.hummingbird.core.builder;
 
 import io.github.thierrysquirrel.hummingbird.core.builder.constant.ThreadPoolExecutorBuilderConstant;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
-import java.util.concurrent.*;
+import io.github.thierrysquirrel.jellyfish.thread.pool.ThreadPool;
+import io.github.thierrysquirrel.jellyfish.thread.scheduled.one.ThreadScheduledOne;
 
 /**
  * Classname: ThreadPoolExecutorBuilder
@@ -32,22 +31,12 @@ public class ThreadPoolExecutorBuilder {
     private ThreadPoolExecutorBuilder() {
     }
 
-    public static ScheduledThreadPoolExecutor builderChannelHeartbeatThreadPoolExecutor() {
-        ThreadFactory threadFactory = new ThreadFactoryBuilder()
-                .setNameFormat(ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT).build();
-        return new ScheduledThreadPoolExecutor(ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_CORE_POOL_SIZE, threadFactory);
+    public static ThreadScheduledOne builderChannelHeartbeatThreadPoolExecutor() {
+        return new ThreadScheduledOne();
     }
 
-    public static ThreadPoolExecutor builderHummingbirdServerThreadPoolExecutor() {
-        var threadFactory = new ThreadFactoryBuilder()
-                .setNameFormat(ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER).build();
-        return new ThreadPoolExecutor(ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER_CORE_POOL_SIZE,
-                ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER_MAXIMUM_POOL_SIZE,
-                ThreadPoolExecutorBuilderConstant.KEEP_ALIVE_TIME,
-                TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(),
-                threadFactory
-        );
+    public static ThreadPool builderHummingbirdServerThreadPoolExecutor() {
+        return new ThreadPool(ThreadPoolExecutorBuilderConstant.HUMMINGBIRD_SERVER_CORE_POOL_SIZE);
     }
 
 }

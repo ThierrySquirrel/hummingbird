@@ -15,7 +15,6 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain;
 
-import lombok.Data;
 
 /**
  * Classname: HttpRequest
@@ -25,9 +24,41 @@ import lombok.Data;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class HttpRequest {
     private String httpMethod;
     private String httpUri;
     private String httpEdition;
+
+    public String getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(String httpMethod) {
+        this.httpMethod = httpMethod;
+    }
+
+    public String getHttpUri() {
+        return httpUri;
+    }
+
+    public void setHttpUri(String httpUri) {
+        this.httpUri = httpUri;
+    }
+
+    public String getHttpEdition() {
+        return httpEdition;
+    }
+
+    public void setHttpEdition(String httpEdition) {
+        this.httpEdition = httpEdition;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpRequest{" +
+                "httpMethod='" + httpMethod + '\'' +
+                ", httpUri='" + httpUri + '\'' +
+                ", httpEdition='" + httpEdition + '\'' +
+                '}';
+    }
 }

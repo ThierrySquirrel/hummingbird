@@ -17,12 +17,12 @@ package io.github.thierrysquirrel.hummingbird.core.client.thread;
 
 import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: AbstractClientSocketSelectorThread
@@ -32,9 +32,9 @@ import java.util.concurrent.CompletableFuture;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
-@Slf4j
 public abstract class AbstractClientSocketSelectorThread<T> implements Runnable {
+    private static final Logger logger = Logger.getLogger(AbstractClientSocketSelectorThread.class.getName());
+
     private SocketChannel socketChannel;
     private HummingbirdDomain<T> hummingbirdDomain;
     private CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture;
@@ -60,7 +60,9 @@ public abstract class AbstractClientSocketSelectorThread<T> implements Runnable 
         try {
             clientSocketSelector(this.socketChannel, hummingbirdDomain, this.socketChannelFacadeCompletableFuture);
         } catch (Exception e) {
-            log.error("clientSocketSelector Error", e);
+            String logMsg = "clientSocketSelector Error";
+            logger.log(Level.WARNING, logMsg, e);
         }
     }
+
 }

@@ -20,7 +20,6 @@ import io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.constan
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRequestContext;
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderKeyConstant;
 import io.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
-import lombok.Data;
 
 /**
  * Classname: FormUrlencodedChain
@@ -30,7 +29,6 @@ import lombok.Data;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class FormUrlencodedChain {
     private ByteBufferFacade httpBody;
     private HttpRequestContext httpRequestContext;
@@ -51,5 +49,29 @@ public class FormUrlencodedChain {
         int length = httpBody.length();
         httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_LENGTH, length + "");
         httpRequestContext.setHttpBody(httpBody.getByteBuffer());
+    }
+
+    public ByteBufferFacade getHttpBody() {
+        return httpBody;
+    }
+
+    public void setHttpBody(ByteBufferFacade httpBody) {
+        this.httpBody = httpBody;
+    }
+
+    public HttpRequestContext getHttpRequestContext() {
+        return httpRequestContext;
+    }
+
+    public void setHttpRequestContext(HttpRequestContext httpRequestContext) {
+        this.httpRequestContext = httpRequestContext;
+    }
+
+    @Override
+    public String toString() {
+        return "FormUrlencodedChain{" +
+                "httpBody=" + httpBody +
+                ", httpRequestContext=" + httpRequestContext +
+                '}';
     }
 }

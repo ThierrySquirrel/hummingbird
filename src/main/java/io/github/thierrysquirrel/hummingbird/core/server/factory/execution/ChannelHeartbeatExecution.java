@@ -20,8 +20,6 @@ import io.github.thierrysquirrel.hummingbird.core.builder.constant.ThreadPoolExe
 import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import io.github.thierrysquirrel.hummingbird.core.server.thread.execute.ChannelHeartbeatThreadExecute;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * Classname: ChannelHeartbeatExecution
  * Description:
@@ -36,6 +34,6 @@ public class ChannelHeartbeatExecution {
 
     public static <T> void channelHeartbeat(ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
         ChannelHeartbeatThreadExecute<T> channelHeartbeatThreadExecute = new ChannelHeartbeatThreadExecute<>(channelHeartbeatDomainCache);
-        ThreadPoolExecutorConstant.CHANNEL_HEARTBEAT.scheduleWithFixedDelay(channelHeartbeatThreadExecute, 0, ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_DELAY, TimeUnit.MILLISECONDS);
+        ThreadPoolExecutorConstant.CHANNEL_HEARTBEAT.execute(channelHeartbeatThreadExecute, ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_DELAY);
     }
 }

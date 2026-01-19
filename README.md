@@ -16,18 +16,19 @@ Help Developers, More Convenient Network Programming
         <dependency>
             <artifactId>hummingbird</artifactId>
             <groupId>io.github.thierrysquirrel</groupId>
-            <version>1.2.0.0-RELEASE</version>
+            <version>1.3.0.0-RELEASE</version>
         </dependency>
 ```
 
 # Encoder
 ```java
-@Data
 public class User {
     private int age;
     private String name;
     private int dataLength;
     private ByteBuffer data;
+
+    //Get Set
 }
 
 public class HummingbirdEncoderImpl implements HummingbirdEncoder<User> {
@@ -101,8 +102,8 @@ public class HummingbirdDecoderImpl implements HummingbirdDecoder<User> {
 
 # The Server Receives Messages
 ```java
-@Slf4j
 public class HummingbirdHandlerImpl implements HummingbirdHandler<User> {
+    //Log
     @Override
     public void channelMessage(SocketChannelFacade<User> socketChannelFacade, User message) {
         log.info (message.toString ());
@@ -138,9 +139,8 @@ public class StartHummingbirdServer {
 
 # Client Receives Message
 ```java
-@Slf4j
-@Data
 public class HummingbirdClientHandlerImpl implements HummingbirdHandler<User> {
+    //Get Set And Log
     private StartHummingbirdClient startHummingbirdClient;
 
     public HummingbirdClientHandlerImpl(StartHummingbirdClient startHummingbirdClient) {
@@ -167,8 +167,8 @@ public class HummingbirdClientHandlerImpl implements HummingbirdHandler<User> {
 
 # Start StartHummingbirdClient
  ```java
-@Data
 public class StartHummingbirdClient {
+    //Get Set
     public static final ExecutorService clientThreadPool = Executors.newFixedThreadPool (16);
     private CompletableFuture<User> call = new CompletableFuture<> ();
 
@@ -214,9 +214,8 @@ public class StartHummingbirdClient {
 
 # HTTP Server Receives Messages
  ```java
-@Slf4j
 public class HttpServerHeader implements HummingbirdHandler<HttpRequestContext> {
-
+    //Log
     @Override
     public void channelMessage(SocketChannelFacade<HttpRequestContext> socketChannelFacade, HttpRequestContext message) {
         String httpUri = message.getHttpRequest ().getHttpUri ();
@@ -284,9 +283,8 @@ public class HttpServer {
 
 # HTTP Client Receives Message
  ```java
-@Slf4j
-@Data
 public class HttpClientHeader implements HummingbirdHandler<HttpRequestContext> {
+    //Get Set And Log
     private HttpClient httpClient;
 
     public HttpClientHeader(HttpClient httpClient) {
@@ -313,9 +311,8 @@ public class HttpClientHeader implements HummingbirdHandler<HttpRequestContext> 
 
 # Start HttpClient
  ```java
-@Slf4j
-@Data
 public class HttpClient {
+    //Get Set And Log
     public static final ExecutorService clientThreadPool = Executors.newFixedThreadPool (16);
     private CompletableFuture<HttpRequestContext> call = new CompletableFuture<> ();
 

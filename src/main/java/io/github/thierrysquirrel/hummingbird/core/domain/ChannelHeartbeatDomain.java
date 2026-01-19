@@ -16,7 +16,6 @@
 package io.github.thierrysquirrel.hummingbird.core.domain;
 
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
-import lombok.Data;
 
 /**
  * Classname: ChannelHeartbeatDomain
@@ -26,9 +25,41 @@ import lombok.Data;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class ChannelHeartbeatDomain<T> {
     private SocketChannelFacade<T> socketChannelFacade;
     private long readHeartbeatTime;
     private long writeHeartbeatTime;
+
+    public SocketChannelFacade<T> getSocketChannelFacade() {
+        return socketChannelFacade;
+    }
+
+    public void setSocketChannelFacade(SocketChannelFacade<T> socketChannelFacade) {
+        this.socketChannelFacade = socketChannelFacade;
+    }
+
+    public long getReadHeartbeatTime() {
+        return readHeartbeatTime;
+    }
+
+    public void setReadHeartbeatTime(long readHeartbeatTime) {
+        this.readHeartbeatTime = readHeartbeatTime;
+    }
+
+    public long getWriteHeartbeatTime() {
+        return writeHeartbeatTime;
+    }
+
+    public void setWriteHeartbeatTime(long writeHeartbeatTime) {
+        this.writeHeartbeatTime = writeHeartbeatTime;
+    }
+
+    @Override
+    public String toString() {
+        return "ChannelHeartbeatDomain{" +
+                "socketChannelFacade=" + socketChannelFacade +
+                ", readHeartbeatTime=" + readHeartbeatTime +
+                ", writeHeartbeatTime=" + writeHeartbeatTime +
+                '}';
+    }
 }

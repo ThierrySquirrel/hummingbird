@@ -17,9 +17,10 @@ package io.github.thierrysquirrel.hummingbird.core.facade.cache;
 
 import io.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 import io.github.thierrysquirrel.hummingbird.core.facade.builder.ByteBufferFacadeBuilder;
-import com.google.common.collect.Maps;
+import io.github.thierrysquirrel.jellyfish.concurrency.map.hash.ConcurrencyHashMap;
 
-import java.util.Map;
+import java.util.Objects;
+
 
 /**
  * Classname: ByteBufferFacadeChannelReadCache
@@ -30,16 +31,21 @@ import java.util.Map;
  * @since JDK21
  **/
 public class ByteBufferFacadeChannelReadCache {
-    private static final Map<String, ByteBufferFacade> CHANNEL_READ_CACHE = Maps.newConcurrentMap();
+    private static final ConcurrencyHashMap<String, ByteBufferFacade> CHANNEL_READ_CACHE = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
 
     private ByteBufferFacadeChannelReadCache() {
     }
 
     public static ByteBufferFacade getByteBufferFacade(String socketChannelString) {
-        return CHANNEL_READ_CACHE.computeIfAbsent(socketChannelString, key -> ByteBufferFacadeBuilder.builderDirectByteBufferFacade());
+        ByteBufferFacade value = CHANNEL_READ_CACHE.get(socketChannelString);
+        if (Objects.isNull(value)) {
+            value = ByteBufferFacadeBuilder.builderDirectByteBufferFacade();
+            CHANNEL_READ_CACHE.set(socketChannelString, value);
+        }
+        return value;
     }
 
     public static void removeByteBufferFacade(String socketChannelString) {
-        CHANNEL_READ_CACHE.remove(socketChannelString);
+        CHANNEL_READ_CACHE.deleteValue(socketChannelString);
     }
 }

@@ -16,11 +16,11 @@
 package io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.factory;
 
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.constant.UrlCoderConstant;
-import com.google.common.collect.Maps;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -52,7 +52,7 @@ public class UrlCoderFactory {
 
     public static Map<String, String> builderUrlMap(String url) {
         int index = url.indexOf(UrlCoderConstant.QUESTION_MARK);
-        Map<String, String> urlMap = Maps.newConcurrentMap();
+        Map<String, String> urlMap = new HashMap<>();
         if (index == -1) {
             return urlMap;
         }

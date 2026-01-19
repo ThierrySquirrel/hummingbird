@@ -17,7 +17,6 @@ package io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.factor
 
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.constant.UrlCoderConstant;
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.factory.UrlCoderFactory;
-import lombok.Data;
 
 /**
  * Classname: HttpUrlChain
@@ -27,7 +26,6 @@ import lombok.Data;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class HttpUrlChain {
     private StringBuilder urlBuilder;
 
@@ -45,4 +43,18 @@ public class HttpUrlChain {
         return urlBuilder.toString();
     }
 
+    public StringBuilder getUrlBuilder() {
+        return urlBuilder;
+    }
+
+    public void setUrlBuilder(StringBuilder urlBuilder) {
+        this.urlBuilder = urlBuilder;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpUrlChain{" +
+                "urlBuilder=" + urlBuilder +
+                '}';
+    }
 }

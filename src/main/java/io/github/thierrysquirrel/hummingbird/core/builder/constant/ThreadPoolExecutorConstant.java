@@ -16,9 +16,8 @@
 package io.github.thierrysquirrel.hummingbird.core.builder.constant;
 
 import io.github.thierrysquirrel.hummingbird.core.builder.ThreadPoolExecutorBuilder;
-
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
+import io.github.thierrysquirrel.jellyfish.thread.pool.ThreadPool;
+import io.github.thierrysquirrel.jellyfish.thread.scheduled.one.ThreadScheduledOne;
 
 /**
  * Classname: ThreadPoolExecutorConstant
@@ -29,8 +28,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since JDK21
  **/
 public final class ThreadPoolExecutorConstant {
-    public static final ScheduledThreadPoolExecutor CHANNEL_HEARTBEAT = ThreadPoolExecutorBuilder.builderChannelHeartbeatThreadPoolExecutor();
-    public static final ThreadPoolExecutor HUMMINGBIRD_SERVER = ThreadPoolExecutorBuilder.builderHummingbirdServerThreadPoolExecutor();
+    public static final ThreadScheduledOne CHANNEL_HEARTBEAT = ThreadPoolExecutorBuilder.builderChannelHeartbeatThreadPoolExecutor();
+    public static final ThreadPool HUMMINGBIRD_SERVER = ThreadPoolExecutorBuilder.builderHummingbirdServerThreadPoolExecutor();
 
     private ThreadPoolExecutorConstant() {
     }

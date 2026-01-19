@@ -15,9 +15,9 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.container;
 
-import com.google.common.collect.Maps;
+import io.github.thierrysquirrel.jellyfish.concurrency.map.hash.ConcurrencyHashMap;
 
-import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -32,10 +32,16 @@ public class SocketWriteStateContainer {
     private SocketWriteStateContainer() {
     }
 
-    private static final Map<String, ReentrantLock> SOCKET_WRITE_STATE = Maps.newConcurrentMap();
+    private static final ConcurrencyHashMap<String, ReentrantLock> SOCKET_WRITE_STATE = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
 
     public static void writing(String socketChannelString) {
-        SOCKET_WRITE_STATE.computeIfAbsent(socketChannelString, key -> new ReentrantLock()).lock();
+        ReentrantLock reentrantLock = SOCKET_WRITE_STATE.get(socketChannelString);
+
+        if (Objects.isNull(reentrantLock)) {
+            reentrantLock = new ReentrantLock();
+            SOCKET_WRITE_STATE.set(socketChannelString, reentrantLock);
+        }
+        reentrantLock.lock();
     }
 
     public static void finished(String socketChannelString) {
@@ -44,7 +50,7 @@ public class SocketWriteStateContainer {
     }
 
     public static void removeCache(String socketChannelString) {
-        SOCKET_WRITE_STATE.remove(socketChannelString);
+        SOCKET_WRITE_STATE.deleteValue(socketChannelString);
     }
 
 }

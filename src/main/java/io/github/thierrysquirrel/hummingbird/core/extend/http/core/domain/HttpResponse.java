@@ -15,7 +15,6 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain;
 
-import lombok.Data;
 
 /**
  * Classname: HttpResponse
@@ -25,9 +24,41 @@ import lombok.Data;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class HttpResponse {
     private String httpEdition;
     private String httpStatusCode;
     private String httpStatus;
+
+    public String getHttpEdition() {
+        return httpEdition;
+    }
+
+    public void setHttpEdition(String httpEdition) {
+        this.httpEdition = httpEdition;
+    }
+
+    public String getHttpStatusCode() {
+        return httpStatusCode;
+    }
+
+    public void setHttpStatusCode(String httpStatusCode) {
+        this.httpStatusCode = httpStatusCode;
+    }
+
+    public String getHttpStatus() {
+        return httpStatus;
+    }
+
+    public void setHttpStatus(String httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "HttpResponse{" +
+                "httpEdition='" + httpEdition + '\'' +
+                ", httpStatusCode='" + httpStatusCode + '\'' +
+                ", httpStatus='" + httpStatus + '\'' +
+                '}';
+    }
 }

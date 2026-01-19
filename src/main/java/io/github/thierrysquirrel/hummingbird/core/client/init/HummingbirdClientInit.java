@@ -20,7 +20,6 @@ import io.github.thierrysquirrel.hummingbird.core.client.factory.execution.Clien
 import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import io.github.thierrysquirrel.hummingbird.core.factory.SocketAddressFactory;
-import lombok.Data;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
@@ -36,7 +35,6 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
 public class HummingbirdClientInit<T> {
     private ThreadPoolExecutor hummingbirdClientThreadPool;
     private String url;
@@ -49,5 +47,47 @@ public class HummingbirdClientInit<T> {
 
         ClientSocketSelectorExecution.clientSocketSelector(hummingbirdClientThreadPool, socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
         return socketChannelFacadeCompletableFuture.get();
+    }
+
+    public ThreadPoolExecutor getHummingbirdClientThreadPool() {
+        return hummingbirdClientThreadPool;
+    }
+
+    public void setHummingbirdClientThreadPool(ThreadPoolExecutor hummingbirdClientThreadPool) {
+        this.hummingbirdClientThreadPool = hummingbirdClientThreadPool;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public HummingbirdDomain<T> getHummingbirdDomain() {
+        return hummingbirdDomain;
+    }
+
+    public void setHummingbirdDomain(HummingbirdDomain<T> hummingbirdDomain) {
+        this.hummingbirdDomain = hummingbirdDomain;
+    }
+
+    public CompletableFuture<SocketChannelFacade<T>> getSocketChannelFacadeCompletableFuture() {
+        return socketChannelFacadeCompletableFuture;
+    }
+
+    public void setSocketChannelFacadeCompletableFuture(CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
+        this.socketChannelFacadeCompletableFuture = socketChannelFacadeCompletableFuture;
+    }
+
+    @Override
+    public String toString() {
+        return "HummingbirdClientInit{" +
+                "hummingbirdClientThreadPool=" + hummingbirdClientThreadPool +
+                ", url='" + url + '\'' +
+                ", hummingbirdDomain=" + hummingbirdDomain +
+                ", socketChannelFacadeCompletableFuture=" + socketChannelFacadeCompletableFuture +
+                '}';
     }
 }

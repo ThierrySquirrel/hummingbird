@@ -23,12 +23,13 @@ import io.github.thierrysquirrel.hummingbird.core.facade.builder.SocketChannelFa
 import io.github.thierrysquirrel.hummingbird.core.facade.cache.ByteBufferFacadeChannelReadCache;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 import io.github.thierrysquirrel.hummingbird.core.server.factory.constant.ServerSocketSelectorKeysFactoryConstant;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: SocketSelectorKeysFactory
@@ -38,8 +39,11 @@ import java.util.Iterator;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Slf4j
 public class SocketSelectorKeysFactory {
+
+    private static final Logger logger = Logger.getLogger(SocketSelectorKeysFactory.class.getName());
+
+
     private SocketSelectorKeysFactory() {
     }
 
@@ -67,7 +71,8 @@ public class SocketSelectorKeysFactory {
                 read(hummingbirdDomain.getHummingbirdDecoder(), hummingbirdDomain.getHummingbirdHandler(), socketChannelFacade, byteBufferFacade);
                 byteBufferFacade.tryExpansion(expansion);
             } catch (IOException e) {
-                log.error("read Error", e);
+                String logMsg = "read Error";
+                logger.log(Level.WARNING, logMsg, e);
                 break;
             }
         }

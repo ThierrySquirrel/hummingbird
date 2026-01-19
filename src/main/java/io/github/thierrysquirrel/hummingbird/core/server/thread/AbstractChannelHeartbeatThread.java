@@ -16,8 +16,9 @@
 package io.github.thierrysquirrel.hummingbird.core.server.thread;
 
 import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: AbstractChannelHeartbeatThread
@@ -27,9 +28,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Data
-@Slf4j
+
 public abstract class AbstractChannelHeartbeatThread<T> implements Runnable {
+
+    private static final Logger logger = Logger.getLogger(AbstractChannelHeartbeatThread.class.getName());
+
     private ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache;
 
     protected AbstractChannelHeartbeatThread(ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
@@ -48,7 +51,8 @@ public abstract class AbstractChannelHeartbeatThread<T> implements Runnable {
         try {
             heartbeat(this.channelHeartbeatDomainCache);
         } catch (Exception e) {
-            log.error("heartbeat Error", e);
+            String logMsg = "heartbeat Error";
+            logger.log(Level.WARNING, logMsg, e);
         }
     }
 }

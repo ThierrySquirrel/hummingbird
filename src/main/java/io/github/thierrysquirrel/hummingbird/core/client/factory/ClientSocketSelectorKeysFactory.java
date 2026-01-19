@@ -21,7 +21,6 @@ import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatD
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import io.github.thierrysquirrel.hummingbird.core.facade.builder.SocketChannelFacadeBuilder;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -36,7 +35,6 @@ import java.util.concurrent.CompletableFuture;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Slf4j
 public class ClientSocketSelectorKeysFactory {
     private ClientSocketSelectorKeysFactory() {
     }

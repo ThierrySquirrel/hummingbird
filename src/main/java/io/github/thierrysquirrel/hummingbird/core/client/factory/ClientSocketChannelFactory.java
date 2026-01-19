@@ -15,11 +15,12 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.client.factory;
 
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: ClientSocketChannelFactory
@@ -29,8 +30,10 @@ import java.nio.channels.SocketChannel;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Slf4j
 public class ClientSocketChannelFactory {
+
+    private static final Logger logger = Logger.getLogger(ClientSocketChannelFactory.class.getName());
+
     private ClientSocketChannelFactory() {
     }
 
@@ -45,7 +48,8 @@ public class ClientSocketChannelFactory {
             if (socketChannel != null) {
                 socketChannel.close();
             }
-            log.error("ClientSocketChannelFactory Error", e);
+            String logMsg = "ClientSocketChannelFactory Error";
+            logger.log(Level.WARNING, logMsg, e);
             throw e;
         }
     }

@@ -15,7 +15,6 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.extend.http.core.factory.constant;
 
-import lombok.Getter;
 
 /**
  * Classname: BoundaryConstant
@@ -25,7 +24,6 @@ import lombok.Getter;
  * @author ThierrySquirrel
  * @since JDK21
  **/
-@Getter
 public enum BoundaryConstant {
     /**
      * Boundary
@@ -37,4 +35,7 @@ public enum BoundaryConstant {
         this.value = value;
     }
 
+    public byte[] getValue() {
+        return value;
+    }
 }
