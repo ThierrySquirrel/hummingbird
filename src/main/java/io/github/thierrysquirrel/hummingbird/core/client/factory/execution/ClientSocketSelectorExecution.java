@@ -18,10 +18,10 @@ package io.github.thierrysquirrel.hummingbird.core.client.factory.execution;
 import io.github.thierrysquirrel.hummingbird.core.client.thread.execute.ClientSocketSelectorThreadExecute;
 import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
+import io.github.thierrysquirrel.jellyfish.thread.pool.ThreadPool;
 
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Classname: ClientSocketSelectorExecution
@@ -35,7 +35,7 @@ public class ClientSocketSelectorExecution {
     private ClientSocketSelectorExecution() {
     }
 
-    public static <T> void clientSocketSelector(ThreadPoolExecutor hummingbirdClientThreadPool, SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
+    public static <T> void clientSocketSelector(ThreadPool hummingbirdClientThreadPool, SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
         ClientSocketSelectorThreadExecute<T> clientSocketSelectorThreadExecute = new ClientSocketSelectorThreadExecute<>(socketChannel, hummingbirdDomain, socketChannelFacadeCompletableFuture);
         hummingbirdClientThreadPool.execute(clientSocketSelectorThreadExecute);
     }

@@ -17,7 +17,7 @@ Tcp开发工具包
         <dependency>
             <artifactId>hummingbird</artifactId>
             <groupId>io.github.thierrysquirrel</groupId>
-            <version>1.3.0.0-RELEASE</version>
+            <version>1.3.0.1-RELEASE</version>
         </dependency>
 ```
 

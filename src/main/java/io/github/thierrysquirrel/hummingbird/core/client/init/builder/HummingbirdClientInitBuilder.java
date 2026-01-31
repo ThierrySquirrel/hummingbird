@@ -23,8 +23,7 @@ import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.domain.builder.HummingbirdDomainBuilder;
 import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
-
-import java.util.concurrent.ThreadPoolExecutor;
+import io.github.thierrysquirrel.jellyfish.thread.pool.ThreadPool;
 
 /**
  * Classname: HummingbirdClientInitBuilder
@@ -38,7 +37,7 @@ public class HummingbirdClientInitBuilder {
     private HummingbirdClientInitBuilder() {
     }
 
-    public static <T> HummingbirdClientInit<T> builderHummingbirdClientInit(ThreadPoolExecutor hummingbirdClientThreadPool, String url, long readHeartbeatTime, long writeHeartbeatTime, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler) {
+    public static <T> HummingbirdClientInit<T> builderHummingbirdClientInit(ThreadPool hummingbirdClientThreadPool, String url, long readHeartbeatTime, long writeHeartbeatTime, HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler) {
         ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache = new ChannelHeartbeatDomainCache<>(hummingbirdHandler, readHeartbeatTime, writeHeartbeatTime);
         HummingbirdDecoderCache<T> hummingbirdDecoderCache = new HummingbirdDecoderCache<>();
         HummingbirdDomain<T> hummingbirdDomain = HummingbirdDomainBuilder.builderHummingbirdDomain(hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache);

@@ -20,12 +20,12 @@ import io.github.thierrysquirrel.hummingbird.core.client.factory.execution.Clien
 import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import io.github.thierrysquirrel.hummingbird.core.factory.SocketAddressFactory;
+import io.github.thierrysquirrel.jellyfish.thread.pool.ThreadPool;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Classname: HummingbirdClientInit
@@ -36,7 +36,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @since JDK21
  **/
 public class HummingbirdClientInit<T> {
-    private ThreadPoolExecutor hummingbirdClientThreadPool;
+    private ThreadPool hummingbirdClientThreadPool;
     private String url;
     private HummingbirdDomain<T> hummingbirdDomain;
     private CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture;
@@ -49,11 +49,11 @@ public class HummingbirdClientInit<T> {
         return socketChannelFacadeCompletableFuture.get();
     }
 
-    public ThreadPoolExecutor getHummingbirdClientThreadPool() {
+    public ThreadPool getHummingbirdClientThreadPool() {
         return hummingbirdClientThreadPool;
     }
 
-    public void setHummingbirdClientThreadPool(ThreadPoolExecutor hummingbirdClientThreadPool) {
+    public void setHummingbirdClientThreadPool(ThreadPool hummingbirdClientThreadPool) {
         this.hummingbirdClientThreadPool = hummingbirdClientThreadPool;
     }
 
