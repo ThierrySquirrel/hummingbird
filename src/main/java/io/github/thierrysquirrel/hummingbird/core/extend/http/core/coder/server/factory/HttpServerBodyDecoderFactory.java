@@ -65,7 +65,7 @@ public class HttpServerBodyDecoderFactory {
 
     public static Map<String, String> builderFormUrlencoded(HttpRequestContext httpRequestContext) {
         String bodyText = builderText(httpRequestContext);
-        return UrlCoderFactory.builderUrlMap(bodyText);
+        return UrlCoderFactory.builderMap(bodyText);
     }
 
     public static String builderText(HttpRequestContext httpRequestContext) {
@@ -96,7 +96,7 @@ public class HttpServerBodyDecoderFactory {
     private static void putFormDataMap(ByteBufferFacade byteBufferFacade, Map<String, HttpFormData> formDataMap, String beginBoundary, String endBoundary) {
         String contentDisposition = HttpDecoderFactory.readLine(byteBufferFacade);
         if (contentDisposition == null) {
-            String logMsg="contentDisposition Error";
+            String logMsg = "contentDisposition Error";
             logger.log(Level.WARNING, logMsg);
             return;
         }
@@ -109,7 +109,7 @@ public class HttpServerBodyDecoderFactory {
 
             String fileContentType = HttpDecoderFactory.readLine(byteBufferFacade);
             if (fileContentType == null) {
-                String logMsg="fileContentType Error";
+                String logMsg = "fileContentType Error";
                 logger.log(Level.WARNING, logMsg);
                 return;
             }

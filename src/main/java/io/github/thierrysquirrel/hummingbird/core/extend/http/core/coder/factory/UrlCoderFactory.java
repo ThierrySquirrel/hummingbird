@@ -57,6 +57,11 @@ public class UrlCoderFactory {
             return urlMap;
         }
         url = url.substring(index + 1);
+        return builderMap(url);
+    }
+
+    public static Map<String, String> builderMap(String url) {
+        Map<String, String> urlMap = new HashMap<>();
         String[] urlSplit = url.split(UrlCoderConstant.AMPERSAND);
         for (String uriParam : urlSplit) {
             int substringIndex = uriParam.indexOf(UrlCoderConstant.EQUALS_SIGN);

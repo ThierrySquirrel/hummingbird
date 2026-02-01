@@ -58,26 +58,38 @@ public class HttpRequestContextBuilder {
         return httpRequestContext;
     }
 
-    public static HttpRequestContext builderTextResponse(String body) {
-        HttpRequestContext httpRequestContext = new HttpRequestContext();
+    public static HttpRequestContext builderTextResponse(HttpRequestContext httpRequestContext, String body) {
         builderResponseBody(httpRequestContext, body);
         httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.TEXT_PLAIN);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderTextResponse(String body) {
+        HttpRequestContext httpRequestContext = builderDefaultResponse();
+        return builderTextResponse(httpRequestContext, body);
+    }
+
+    public static HttpRequestContext builderJsonResponse(HttpRequestContext httpRequestContext, String body) {
+        builderResponseBody(httpRequestContext, body);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.JSON);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderJsonResponse(String body) {
+        HttpRequestContext httpRequestContext = builderDefaultResponse();
+        return builderJsonResponse(httpRequestContext, body);
+    }
+
+    public static HttpRequestContext builderDefaultResponse() {
+        HttpRequestContext httpRequestContext = new HttpRequestContext();
+        builderDefaultHttpHeader(httpRequestContext);
 
         HttpResponse httpResponse = HttpResponseBuilder.builderDefault();
         httpRequestContext.setHttpResponse(httpResponse);
         return httpRequestContext;
     }
 
-    public static HttpRequestContext builderJsonResponse(String body) {
-        HttpRequestContext httpRequestContext = new HttpRequestContext();
-        builderResponseBody(httpRequestContext, body);
-        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.JSON);
-
-        return httpRequestContext;
-    }
-
     private static void builderResponseBody(HttpRequestContext httpRequestContext, String body) {
-        builderDefaultHttpHeader(httpRequestContext);
         byte[] bodyBytes = body.getBytes();
         int bodyLength = bodyBytes.length;
         httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_LENGTH, bodyLength + "");
