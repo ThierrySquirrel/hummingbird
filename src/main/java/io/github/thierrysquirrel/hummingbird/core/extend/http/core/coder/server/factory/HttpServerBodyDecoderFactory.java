@@ -60,6 +60,7 @@ public class HttpServerBodyDecoderFactory {
         String endBoundary = beginBoundary + HttpFormDataCoderConstant.DOUBLE_HYPHEN;
 
         whileReadFormData(byteBufferFacade, formDataMap, beginBoundary, endBoundary);
+        byteBufferFacade.clear();
         return formDataMap;
     }
 
@@ -73,7 +74,10 @@ public class HttpServerBodyDecoderFactory {
     }
 
     public static byte[] builderBytes(HttpRequestContext httpRequestContext) {
-        return getByteBufferFacade(httpRequestContext).getAllBytes();
+        ByteBufferFacade byteBufferFacade = getByteBufferFacade(httpRequestContext);
+        byte[] allBytes = byteBufferFacade.getAllBytes();
+        byteBufferFacade.clear();
+        return allBytes;
     }
 
     private static ByteBufferFacade getByteBufferFacade(HttpRequestContext httpRequestContext) {

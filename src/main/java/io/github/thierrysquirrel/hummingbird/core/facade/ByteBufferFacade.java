@@ -28,6 +28,7 @@ import java.nio.ByteBuffer;
  * @since JDK21
  **/
 public class ByteBufferFacade {
+    private boolean isAllocateDirect;
     private ByteBuffer byteBuffer;
     private int makePosition = -1;
 
@@ -133,8 +134,14 @@ public class ByteBufferFacade {
     }
 
     private void reallocateCapacity(int capacity) {
-        ByteBuffer newBytebuffer = ByteBuffer.allocateDirect(capacity);
+        ByteBuffer newBytebuffer = null;
+        if (isAllocateDirect) {
+            newBytebuffer = ByteBuffer.allocateDirect(capacity);
+        } else {
+            newBytebuffer = ByteBuffer.allocate(capacity);
+        }
         newBytebuffer.put(byteBuffer);
+        byteBuffer.clear();
         byteBuffer = newBytebuffer;
     }
 
@@ -242,6 +249,14 @@ public class ByteBufferFacade {
         return byteBuffer.getChar();
     }
 
+    public boolean isAllocateDirect() {
+        return isAllocateDirect;
+    }
+
+    public void setAllocateDirect(boolean allocateDirect) {
+        isAllocateDirect = allocateDirect;
+    }
+
     public ByteBuffer getByteBuffer() {
         return byteBuffer;
     }
@@ -261,7 +276,8 @@ public class ByteBufferFacade {
     @Override
     public String toString() {
         return "ByteBufferFacade{" +
-                "byteBuffer=" + byteBuffer +
+                "isAllocateDirect=" + isAllocateDirect +
+                ", byteBuffer=" + byteBuffer +
                 ", makePosition=" + makePosition +
                 '}';
     }

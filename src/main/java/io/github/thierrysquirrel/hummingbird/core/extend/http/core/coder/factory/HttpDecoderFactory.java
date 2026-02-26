@@ -138,6 +138,9 @@ public class HttpDecoderFactory {
             return null;
         }
         readData.flip();
-        return new String(readData.getAllBytes());
+        byte[] allBytes = readData.getAllBytes();
+        readData.clear();
+
+        return new String(allBytes);
     }
 }

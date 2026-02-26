@@ -19,7 +19,6 @@ import io.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 import io.github.thierrysquirrel.hummingbird.core.facade.builder.ByteBufferFacadeBuilder;
 import io.github.thierrysquirrel.jellyfish.concurrency.map.hash.ConcurrencyHashMap;
 
-import java.util.Objects;
 
 /**
  * Classname: ByteBufferFacadeChannelWriteCache
@@ -36,15 +35,14 @@ public class ByteBufferFacadeChannelWriteCache {
     }
 
     public static ByteBufferFacade getByteBufferFacade(String socketChannelString) {
-        ByteBufferFacade value = CHANNEL_WRITE_CACHE.get(socketChannelString);
-        if (Objects.isNull(value)) {
-            value = ByteBufferFacadeBuilder.builderDirectByteBufferFacade();
-            CHANNEL_WRITE_CACHE.set(socketChannelString, value);
-        }
-        return value;
+        return CHANNEL_WRITE_CACHE.getIfAbsent(socketChannelString,key->ByteBufferFacadeBuilder.builderDirectByteBufferFacade());
     }
 
     public static void removeByteBufferFacade(String socketChannelString) {
+        ByteBufferFacade byteBufferFacade = CHANNEL_WRITE_CACHE.get(socketChannelString);
+        if(byteBufferFacade != null) {
+            byteBufferFacade.clear();
+        }
         CHANNEL_WRITE_CACHE.deleteValue(socketChannelString);
     }
 

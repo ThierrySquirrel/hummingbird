@@ -53,6 +53,8 @@ public class HttpFormDataBodyFactory {
             }
         }
         byteBufferFacade.flip();
-        return byteBufferFacade.getByteBuffer();
+        ByteBuffer byteBuffer = byteBufferFacade.getByteBuffer();
+        byteBufferFacade.clear();
+        return byteBuffer;
     }
 }

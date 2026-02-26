@@ -71,7 +71,9 @@ public class FormDataChain {
         putEndBoundary();
         httpBody.flip();
         httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_LENGTH, httpBody.length() + "");
-        httpRequestContext.setHttpBody(httpBody.getByteBuffer());
+        ByteBuffer byteBuffer = httpBody.getByteBuffer();
+        httpBody.clear();
+        httpRequestContext.setHttpBody(byteBuffer);
     }
 
     private void putContentDispositionFile(String key, String fileName) {

@@ -21,6 +21,8 @@ import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRe
 import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant.HttpHeaderKeyConstant;
 import io.github.thierrysquirrel.hummingbird.core.facade.ByteBufferFacade;
 
+import java.nio.ByteBuffer;
+
 /**
  * Classname: FormUrlencodedChain
  * Description:
@@ -48,7 +50,9 @@ public class FormUrlencodedChain {
         httpBody.flip();
         int length = httpBody.length();
         httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_LENGTH, length + "");
-        httpRequestContext.setHttpBody(httpBody.getByteBuffer());
+        ByteBuffer byteBuffer = httpBody.getByteBuffer();
+        httpBody.clear();
+        httpRequestContext.setHttpBody(byteBuffer);
     }
 
     public ByteBufferFacade getHttpBody() {
