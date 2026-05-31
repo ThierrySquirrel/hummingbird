@@ -1,5 +1,5 @@
 /**
- * Copyright 2024/8/8 ThierrySquirrel
+ * Copyright 2026/6/1 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  **/
 package io.github.thierrysquirrel.hummingbird.core.server.factory.execution;
 
-import io.github.thierrysquirrel.hummingbird.core.builder.constant.ThreadPoolExecutorConstant;
+import io.github.thierrysquirrel.hummingbird.core.builder.container.ThreadPoolExecutorContainer;
 import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.server.thread.execute.ServerSocketSelectorThreadExecute;
 
@@ -24,19 +24,18 @@ import java.nio.channels.ServerSocketChannel;
 /**
  * Classname: ServerSocketSelectorExecution
  * Description:
- * Date:2024/8/8
+ * Date:2026/6/1
  *
  * @author ThierrySquirrel
- * @since JDK21
+ * @since JDK25
  **/
 public class ServerSocketSelectorExecution {
     private ServerSocketSelectorExecution() {
     }
 
-    public static <T> void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) {
+    public static <T> void serverSocketSelector(String url, ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) {
         ServerSocketSelectorThreadExecute<T> serverSocketSelectorThreadExecute = new ServerSocketSelectorThreadExecute<>(serverSocketChannel, hummingbirdDomain);
-        ThreadPoolExecutorConstant.HUMMINGBIRD_SERVER.execute(serverSocketSelectorThreadExecute);
-
+        ThreadPoolExecutorContainer.getHummingbirdServer(url).execute(serverSocketSelectorThreadExecute);
     }
 }
 

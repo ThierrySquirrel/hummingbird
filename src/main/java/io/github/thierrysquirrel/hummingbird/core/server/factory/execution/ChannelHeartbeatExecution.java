@@ -1,5 +1,5 @@
 /**
- * Copyright 2024/8/8 ThierrySquirrel
+ * Copyright 2026/6/1 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,24 @@
 package io.github.thierrysquirrel.hummingbird.core.server.factory.execution;
 
 import io.github.thierrysquirrel.hummingbird.core.builder.constant.ThreadPoolExecutorBuilderConstant;
-import io.github.thierrysquirrel.hummingbird.core.builder.constant.ThreadPoolExecutorConstant;
+import io.github.thierrysquirrel.hummingbird.core.builder.container.ThreadPoolExecutorContainer;
 import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import io.github.thierrysquirrel.hummingbird.core.server.thread.execute.ChannelHeartbeatThreadExecute;
 
 /**
  * Classname: ChannelHeartbeatExecution
  * Description:
- * Date:2024/8/8
+ * Date:2026/6/1
  *
  * @author ThierrySquirrel
- * @since JDK21
+ * @since JDK25
  **/
 public class ChannelHeartbeatExecution {
     private ChannelHeartbeatExecution() {
     }
 
-    public static <T> void channelHeartbeat(ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
+    public static <T> void channelHeartbeat(String url, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache) {
         ChannelHeartbeatThreadExecute<T> channelHeartbeatThreadExecute = new ChannelHeartbeatThreadExecute<>(channelHeartbeatDomainCache);
-        ThreadPoolExecutorConstant.CHANNEL_HEARTBEAT.execute(channelHeartbeatThreadExecute, ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_DELAY);
+        ThreadPoolExecutorContainer.getChannelHeartbeat(url).execute(channelHeartbeatThreadExecute, ThreadPoolExecutorBuilderConstant.CHANNEL_HEARTBEAT_DELAY);
     }
 }

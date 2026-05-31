@@ -1,5 +1,5 @@
 /**
- * Copyright 2024/8/8 ThierrySquirrel
+ * Copyright 2026/6/1 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,10 +33,10 @@ import java.nio.channels.ServerSocketChannel;
 /**
  * Classname: HummingbirdServerInit
  * Description:
- * Date:2024/8/8
+ * Date:2026/6/1
  *
  * @author ThierrySquirrel
- * @since JDK21
+ * @since JDK25
  **/
 public class HummingbirdServerInit {
 
@@ -47,9 +47,9 @@ public class HummingbirdServerInit {
                                 HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler) throws IOException {
         ServerSocketChannel serverSocketChannel = ServerSocketChannelFactory.bind(SocketAddressFactory.getInetSocketAddress(url));
         ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache = new ChannelHeartbeatDomainCache<>(hummingbirdHandler, readHeartbeatTime, writeHeartbeatTime);
-        ChannelHeartbeatExecution.channelHeartbeat(channelHeartbeatDomainCache);
+        ChannelHeartbeatExecution.channelHeartbeat(url, channelHeartbeatDomainCache);
         HummingbirdDecoderCache<T> hummingbirdDecoderCache = new HummingbirdDecoderCache<>();
         HummingbirdDomain<T> hummingbirdDomain = HummingbirdDomainBuilder.builderHummingbirdDomain(hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache);
-        HummingbirdServerInitFactory.init(serverSocketChannel, hummingbirdDomain);
+        HummingbirdServerInitFactory.init(url, serverSocketChannel, hummingbirdDomain);
     }
 }

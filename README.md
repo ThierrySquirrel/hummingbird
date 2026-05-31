@@ -5,22 +5,26 @@ TCP Development Kit
 [中文](./README_zh_CN.md)
 
 Support Function:
+
 - [x] TCP Network Programming
 
 # TCP Network Programming:
+
 Help Developers, More Convenient Network Programming
 
 ## Quick Start
+
 ```xml
 <!--Adding dependencies to pom. XML-->
-        <dependency>
-            <artifactId>hummingbird</artifactId>
-            <groupId>io.github.thierrysquirrel</groupId>
-            <version>1.3.0.3-RELEASE</version>
-        </dependency>
+<dependency>
+    <artifactId>hummingbird</artifactId>
+    <groupId>io.github.thierrysquirrel</groupId>
+    <version>1.3.0.4-RELEASE</version>
+</dependency>
 ```
 
 # Encoder
+
 ```java
 public class User {
     private int age;
@@ -34,110 +38,114 @@ public class User {
 public class HummingbirdEncoderImpl implements HummingbirdEncoder<User> {
     @Override
     public void encoder(User message, ByteBufferFacade byteBufferFacade) {
-        ByteBuffer data = message.getData ();
-        message.setData (null);
-        byte[] serialize = SerializerFactory.serialize (message);
-        byteBufferFacade.putInt (serialize.length);
-        byteBufferFacade.putBytes (serialize);
+        ByteBuffer data = message.getData();
+        message.setData(null);
+        byte[] serialize = SerializerFactory.serialize(message);
+        byteBufferFacade.putInt(serialize.length);
+        byteBufferFacade.putBytes(serialize);
         if (data != null) {
-            byteBufferFacade.put (data);
+            byteBufferFacade.put(data);
         }
     }
 }
 ```
 
 # Decoder
+
 ```java
 public class HummingbirdDecoderImpl implements HummingbirdDecoder<User> {
     @Override
     public User decoder(ByteBufferFacade byteBufferFacade, SocketChannelFacade<User> socketChannelFacade) {
-        User messageDecoderCache = socketChannelFacade.getMessageDecoderCache ();
+        User messageDecoderCache = socketChannelFacade.getMessageDecoderCache();
         if (messageDecoderCache != null) {
-            ByteBuffer data = messageDecoderCache.getData ();
-            boolean tryGet = byteBufferFacade.tryGet (data);
+            ByteBuffer data = messageDecoderCache.getData();
+            boolean tryGet = byteBufferFacade.tryGet(data);
             if (tryGet) {
-                data.flip ();
-                socketChannelFacade.removeMessageDecoderCache ();
+                data.flip();
+                socketChannelFacade.removeMessageDecoderCache();
                 return messageDecoderCache;
             }
             return null;
         }
 
-        if (byteBufferFacade.length () < 4) {
-            byteBufferFacade.reset ();
+        if (byteBufferFacade.length() < 4) {
+            byteBufferFacade.reset();
             return null;
         }
 
-        int userLength = byteBufferFacade.getInt ();
-        if (byteBufferFacade.length () < userLength) {
-            byteBufferFacade.reset ();
+        int userLength = byteBufferFacade.getInt();
+        if (byteBufferFacade.length() < userLength) {
+            byteBufferFacade.reset();
             return null;
         }
 
         byte[] userBytes = new byte[userLength];
-        byteBufferFacade.getBytes (userBytes);
-        User user = SerializerFactory.deSerialize (userBytes, User.class);
-        int dataLength = user.getDataLength ();
+        byteBufferFacade.getBytes(userBytes);
+        User user = SerializerFactory.deSerialize(userBytes, User.class);
+        int dataLength = user.getDataLength();
         if (dataLength < 1) {
             return user;
         }
 
-        if (user.getData () == null) {
-            ByteBuffer data = ByteBuffer.allocateDirect (dataLength);
-            user.setData (data);
+        if (user.getData() == null) {
+            ByteBuffer data = ByteBuffer.allocateDirect(dataLength);
+            user.setData(data);
         }
-        if (byteBufferFacade.length () < dataLength) {
-            socketChannelFacade.putMessageDecoderCache (user);
-            ByteBuffer data = user.getData ();
-            byteBufferFacade.tryGet (data);
+        if (byteBufferFacade.length() < dataLength) {
+            socketChannelFacade.putMessageDecoderCache(user);
+            ByteBuffer data = user.getData();
+            byteBufferFacade.tryGet(data);
             return null;
         }
-        ByteBuffer data = user.getData ();
-        byteBufferFacade.tryGet (data);
-        data.flip ();
+        ByteBuffer data = user.getData();
+        byteBufferFacade.tryGet(data);
+        data.flip();
         return user;
     }
 }
 ```
 
 # The Server Receives Messages
+
 ```java
 public class HummingbirdHandlerImpl implements HummingbirdHandler<User> {
     //Log
     @Override
     public void channelMessage(SocketChannelFacade<User> socketChannelFacade, User message) {
-        log.info (message.toString ());
+        log.info(message.toString());
         try {
-            socketChannelFacade.sendMessage (message);
+            socketChannelFacade.sendMessage(message);
         } catch (IOException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
     }
 
     @Override
     public void channelTimeout(SocketChannelFacade<User> socketChannelFacade) {
-        log.info ("timeout");
-        socketChannelFacade.close ();
+        log.info("timeout");
+        socketChannelFacade.close();
     }
 
     @Override
     public void channelClose(SocketAddress remoteAddress, SocketAddress localAddress) {
-        log.info ("channelClose remoteAddress:{} localAddress:{}", remoteAddress, localAddress);
+        log.info("channelClose remoteAddress:{} localAddress:{}", remoteAddress, localAddress);
     }
 }
 ```
 
 # Start StartHummingbirdServer
+
  ```java
 public class StartHummingbirdServer {
     public static void main(String[] args) throws IOException {
-        HummingbirdServerInit.init ("127.0.0.1:8080", 4000, 0,
-                new HummingbirdDecoderImpl (), new HummingbirdEncoderImpl (), new HummingbirdHandlerImpl ());
+        HummingbirdServerInit.init("127.0.0.1:8080", 4000, 0,
+                new HummingbirdDecoderImpl(), new HummingbirdEncoderImpl(), new HummingbirdHandlerImpl());
     }
 }
  ```
 
 # Client Receives Message
+
 ```java
 public class HummingbirdClientHandlerImpl implements HummingbirdHandler<User> {
     //Get Set And Log
@@ -149,60 +157,61 @@ public class HummingbirdClientHandlerImpl implements HummingbirdHandler<User> {
 
     @Override
     public void channelMessage(SocketChannelFacade<User> socketChannelFacade, User message) {
-        startHummingbirdClient.getCall ().complete (message);
+        startHummingbirdClient.getCall().complete(message);
     }
 
     @Override
     public void channelTimeout(SocketChannelFacade<User> socketChannelFacade) {
-        log.info ("timeout");
-        socketChannelFacade.close ();
+        log.info("timeout");
+        socketChannelFacade.close();
     }
 
     @Override
     public void channelClose(SocketAddress remoteAddress, SocketAddress localAddress) {
-        log.info ("channelClose remoteAddress:{} localAddress:{}", remoteAddress, localAddress);
+        log.info("channelClose remoteAddress:{} localAddress:{}", remoteAddress, localAddress);
     }
 }
 ```
 
 # Start StartHummingbirdClient
+
  ```java
 public class StartHummingbirdClient {
     //Get Set
-    public static final ExecutorService clientThreadPool = Executors.newFixedThreadPool (16);
-    private CompletableFuture<User> call = new CompletableFuture<> ();
+    public static final ExecutorService clientThreadPool = Executors.newFixedThreadPool(16);
+    private CompletableFuture<User> call = new CompletableFuture<>();
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
-        StartHummingbirdClient startHummingbirdClient = new StartHummingbirdClient ();
+        StartHummingbirdClient startHummingbirdClient = new StartHummingbirdClient();
 
-        HummingbirdClientInit<User> userHummingbirdClientInit = HummingbirdClientInitBuilder.builderHummingbirdClientInit ((ThreadPoolExecutor) clientThreadPool, "127.0.0.1:8080", 4000,
-                0, new HummingbirdDecoderImpl (), new HummingbirdEncoderImpl (), new HummingbirdClientHandlerImpl (startHummingbirdClient));
-        SocketChannelFacade<User> connect = userHummingbirdClientInit.connect ();
+        HummingbirdClientInit<User> userHummingbirdClientInit = HummingbirdClientInitBuilder.builderHummingbirdClientInit((ThreadPoolExecutor) clientThreadPool, "127.0.0.1:8080", 4000,
+                0, new HummingbirdDecoderImpl(), new HummingbirdEncoderImpl(), new HummingbirdClientHandlerImpl(startHummingbirdClient));
+        SocketChannelFacade<User> connect = userHummingbirdClientInit.connect();
 
-        User user = new User ();
-        user.setAge (1);
-        user.setName ("Hummingbird");
-        byte[] hello = "Hello".getBytes ();
-        user.setDataLength (hello.length);
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect (hello.length);
-        byteBuffer.put (hello);
-        byteBuffer.flip ();
-        user.setData (byteBuffer);
-        connect.sendMessage (user);
+        User user = new User();
+        user.setAge(1);
+        user.setName("Hummingbird");
+        byte[] hello = "Hello".getBytes();
+        user.setDataLength(hello.length);
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(hello.length);
+        byteBuffer.put(hello);
+        byteBuffer.flip();
+        user.setData(byteBuffer);
+        connect.sendMessage(user);
 
-        User callUser = startHummingbirdClient.getCall ().get ();
-        System.out.println (callUser);
-        connect.close ();
-        if (!connect.isOpen ()) {
-            connect = userHummingbirdClientInit.connect ();
+        User callUser = startHummingbirdClient.getCall().get();
+        System.out.println(callUser);
+        connect.close();
+        if (!connect.isOpen()) {
+            connect = userHummingbirdClientInit.connect();
         }
-        startHummingbirdClient.call = new CompletableFuture<> ();
-        User userB = new User ();
-        userB.setAge (2);
-        userB.setName ("HummingbirdB");
-        connect.sendMessage (userB);
-        User callUserB = startHummingbirdClient.getCall ().get ();
-        System.out.println (callUserB);
+        startHummingbirdClient.call = new CompletableFuture<>();
+        User userB = new User();
+        userB.setAge(2);
+        userB.setName("HummingbirdB");
+        connect.sendMessage(userB);
+        User callUserB = startHummingbirdClient.getCall().get();
+        System.out.println(callUserB);
     }
 
 }
@@ -213,75 +222,78 @@ public class StartHummingbirdClient {
 # HTTP
 
 # HTTP Server Receives Messages
+
  ```java
 public class HttpServerHeader implements HummingbirdHandler<HttpRequestContext> {
     //Log
     @Override
     public void channelMessage(SocketChannelFacade<HttpRequestContext> socketChannelFacade, HttpRequestContext message) {
-        String httpUri = message.getHttpRequest ().getHttpUri ();
-        Map<String, String> urlMap = HttpUrlCoderRootChainFactory.createUrlMap (httpUri);
-        log.info (urlMap.toString ());
+        String httpUri = message.getHttpRequest().getHttpUri();
+        Map<String, String> urlMap = HttpUrlCoderRootChainFactory.createUrlMap(httpUri);
+        log.info(urlMap.toString());
 
-        Map<String, String> httpHeader = message.getHttpHeader ();
-        boolean isFormData = HttpHeaderFactory.equalsIgnoreCaseContentType (httpHeader, HttpHeaderValueConstant.FORM_DATA);
-        if(isFormData){
+        Map<String, String> httpHeader = message.getHttpHeader();
+        boolean isFormData = HttpHeaderFactory.equalsIgnoreCaseContentType(httpHeader, HttpHeaderValueConstant.FORM_DATA);
+        if (isFormData) {
             Map<String, HttpFormData> formDataBody = HttpServerBodyDecoderFactory.builderFormData(message);
-            for (Map.Entry<String, HttpFormData> dataEntry : formDataBody.entrySet ()) {
-                HttpFormData value = dataEntry.getValue ();
-                if(value.isFile ()){
+            for (Map.Entry<String, HttpFormData> dataEntry : formDataBody.entrySet()) {
+                HttpFormData value = dataEntry.getValue();
+                if (value.isFile()) {
                     try {
-                        HttpFormDataBodyFactory.writeFile (value,"/cache/"+value.getFileName ());
+                        HttpFormDataBodyFactory.writeFile(value, "/cache/" + value.getFileName());
                     } catch (IOException e) {
-                        log.error ("writeFile Error",e);
+                        log.error("writeFile Error", e);
                     }
                 }
             }
         }
-        boolean isFormUrlencoded = HttpHeaderFactory.equalsIgnoreCaseContentType (httpHeader, HttpHeaderValueConstant.FORM_URLENCODED);
-        if(isFormUrlencoded){
-            Map<String, String> formUrlencodedMap = HttpServerBodyDecoderFactory.builderFormUrlencoded (message);
-            log.info (formUrlencodedMap.toString ());
+        boolean isFormUrlencoded = HttpHeaderFactory.equalsIgnoreCaseContentType(httpHeader, HttpHeaderValueConstant.FORM_URLENCODED);
+        if (isFormUrlencoded) {
+            Map<String, String> formUrlencodedMap = HttpServerBodyDecoderFactory.builderFormUrlencoded(message);
+            log.info(formUrlencodedMap.toString());
         }
-        boolean isText = HttpHeaderFactory.equalsIgnoreCaseContentType (httpHeader, HttpHeaderValueConstant.TEXT_PLAIN);
-        if(isText){
-            String text = HttpServerBodyDecoderFactory.builderText (message);
-            log.info (text);
+        boolean isText = HttpHeaderFactory.equalsIgnoreCaseContentType(httpHeader, HttpHeaderValueConstant.TEXT_PLAIN);
+        if (isText) {
+            String text = HttpServerBodyDecoderFactory.builderText(message);
+            log.info(text);
         }
 
-        HttpRequestContext httpRequestContext = HttpRequestContextBuilder.builderTextResponse ("Hello World");
+        HttpRequestContext httpRequestContext = HttpRequestContextBuilder.builderTextResponse("Hello World");
         try {
-            socketChannelFacade.sendMessage (httpRequestContext);
+            socketChannelFacade.sendMessage(httpRequestContext);
         } catch (IOException e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
 
     }
 
     @Override
     public void channelTimeout(SocketChannelFacade<HttpRequestContext> socketChannelFacade) {
-        log.info ("timeout");
-        socketChannelFacade.close ();
+        log.info("timeout");
+        socketChannelFacade.close();
     }
 
     @Override
     public void channelClose(SocketAddress remoteAddress, SocketAddress localAddress) {
-        log.info ("channelClose remoteAddress:{} localAddress:{}", remoteAddress, localAddress);
+        log.info("channelClose remoteAddress:{} localAddress:{}", remoteAddress, localAddress);
     }
 
 }
  ```
 
 # Start HttpServer
+
  ```java
 public class HttpServer {
-    public static void main(String[] args) throws Exception{
-        HummingbirdServerInit.init ("127.0.0.1:8080",4000,0
-                ,new HttpServerDecoder (),new HttpServerEncoder (),new HttpServerHeader ());
+    public static void main(String[] args) throws Exception {
+        HummingbirdServerInit.init("127.0.0.1:8080", 4000, 0
+                , new HttpServerDecoder(), new HttpServerEncoder(), new HttpServerHeader());
     }
 }
  ```
 
 # HTTP Client Receives Message
+
  ```java
 public class HttpClientHeader implements HummingbirdHandler<HttpRequestContext> {
     //Get Set And Log
@@ -293,64 +305,65 @@ public class HttpClientHeader implements HummingbirdHandler<HttpRequestContext> 
 
     @Override
     public void channelMessage(SocketChannelFacade<HttpRequestContext> socketChannelFacade, HttpRequestContext message) {
-        httpClient.getCall ().complete (message);
+        httpClient.getCall().complete(message);
     }
 
     @Override
     public void channelTimeout(SocketChannelFacade<HttpRequestContext> socketChannelFacade) {
-        log.info ("timeout");
-        socketChannelFacade.close ();
+        log.info("timeout");
+        socketChannelFacade.close();
     }
 
     @Override
     public void channelClose(SocketAddress remoteAddress, SocketAddress localAddress) {
-        log.info ("channelClose remoteAddress:{} localAddress:{}", remoteAddress, localAddress);
+        log.info("channelClose remoteAddress:{} localAddress:{}", remoteAddress, localAddress);
     }
 }
  ```
 
 # Start HttpClient
+
  ```java
 public class HttpClient {
     //Get Set And Log
-    public static final ExecutorService clientThreadPool = Executors.newFixedThreadPool (16);
-    private CompletableFuture<HttpRequestContext> call = new CompletableFuture<> ();
+    public static final ExecutorService clientThreadPool = Executors.newFixedThreadPool(16);
+    private CompletableFuture<HttpRequestContext> call = new CompletableFuture<>();
 
     public static void main(String[] args) throws IOException, ExecutionException, InterruptedException {
 
-        HttpClient httpClient = new HttpClient ();
+        HttpClient httpClient = new HttpClient();
 
-        HummingbirdClientInit<HttpRequestContext> httpClientInit = HummingbirdClientInitBuilder.builderHummingbirdClientInit ((ThreadPoolExecutor) clientThreadPool, "127.0.0.1:8080", 4000,
-                0, new HttpClientDecoder (), new HttpClientEncoder (), new HttpClientHeader (httpClient));
-        SocketChannelFacade<HttpRequestContext> connect = httpClientInit.connect ();
+        HummingbirdClientInit<HttpRequestContext> httpClientInit = HummingbirdClientInitBuilder.builderHummingbirdClientInit((ThreadPoolExecutor) clientThreadPool, "127.0.0.1:8080", 4000,
+                0, new HttpClientDecoder(), new HttpClientEncoder(), new HttpClientHeader(httpClient));
+        SocketChannelFacade<HttpRequestContext> connect = httpClientInit.connect();
 
-        String uri = HttpUrlCoderRootChainFactory.createUrl ("/user", "hello", "world")
-                .putUrl ("id", "123456").builder ();
+        String uri = HttpUrlCoderRootChainFactory.createUrl("/user", "hello", "world")
+                .putUrl("id", "123456").builder();
 
-        HttpRequestContext httpRequestContext = HttpRequestContextBuilder.builderRequest (HttpMethodConstant.POST,uri);
+        HttpRequestContext httpRequestContext = HttpRequestContextBuilder.builderRequest(HttpMethodConstant.POST, uri);
 
-        boolean isFormData=Boolean.FALSE;
-        if(isFormData){
-            HttpClientBodyEncoderRootChainFactory.createFormData (httpRequestContext)
-                    .putText ("hello","world")
-                    .putFile ("file","filePath",HttpHeaderValueConstant.FORM_DATA)
-                    .builder ();
+        boolean isFormData = Boolean.FALSE;
+        if (isFormData) {
+            HttpClientBodyEncoderRootChainFactory.createFormData(httpRequestContext)
+                    .putText("hello", "world")
+                    .putFile("file", "filePath", HttpHeaderValueConstant.FORM_DATA)
+                    .builder();
         }
-        boolean isFormUrlencoded=Boolean.TRUE;
-        if(isFormUrlencoded){
-            HttpClientBodyEncoderRootChainFactory.createFormUrlencoded (httpRequestContext,"hello","world")
-                    .putText ("id","654321")
-                    .builder ();
-        }
-
-        boolean isText=Boolean.FALSE;
-        if(isText){
-            HttpClientBodyEncoderRootChainFactory.createText (httpRequestContext,"hello world");
+        boolean isFormUrlencoded = Boolean.TRUE;
+        if (isFormUrlencoded) {
+            HttpClientBodyEncoderRootChainFactory.createFormUrlencoded(httpRequestContext, "hello", "world")
+                    .putText("id", "654321")
+                    .builder();
         }
 
-        connect.sendMessage (httpRequestContext);
-        HttpRequestContext callHttpRequestContext = httpClient.getCall ().get ();
-        log.info (callHttpRequestContext.toString ());
+        boolean isText = Boolean.FALSE;
+        if (isText) {
+            HttpClientBodyEncoderRootChainFactory.createText(httpRequestContext, "hello world");
+        }
+
+        connect.sendMessage(httpRequestContext);
+        HttpRequestContext callHttpRequestContext = httpClient.getCall().get();
+        log.info(callHttpRequestContext.toString());
     }
 }
  ```

@@ -1,5 +1,5 @@
 /**
- * Copyright 2024/8/8 ThierrySquirrel
+ * Copyright 2026/6/1 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ import io.github.thierrysquirrel.jellyfish.concurrency.map.hash.ConcurrencyHashM
 /**
  * Classname: ByteBufferFacadeChannelReadCache
  * Description:
- * Date:2024/8/8
+ * Date:2026/6/1
  *
  * @author ThierrySquirrel
- * @since JDK21
+ * @since JDK25
  **/
 public class ByteBufferFacadeChannelReadCache {
     private static final ConcurrencyHashMap<String, ByteBufferFacade> CHANNEL_READ_CACHE = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
@@ -35,12 +35,12 @@ public class ByteBufferFacadeChannelReadCache {
     }
 
     public static ByteBufferFacade getByteBufferFacade(String socketChannelString) {
-        return CHANNEL_READ_CACHE.getIfAbsent(socketChannelString,key->ByteBufferFacadeBuilder.builderDirectByteBufferFacade());
+        return CHANNEL_READ_CACHE.getIfAbsent(socketChannelString, key -> ByteBufferFacadeBuilder.builderDirectByteBufferFacade());
     }
 
     public static void removeByteBufferFacade(String socketChannelString) {
         ByteBufferFacade byteBufferFacade = CHANNEL_READ_CACHE.get(socketChannelString);
-        if(byteBufferFacade != null) {
+        if (byteBufferFacade != null) {
             byteBufferFacade.clear();
         }
         CHANNEL_READ_CACHE.deleteValue(socketChannelString);

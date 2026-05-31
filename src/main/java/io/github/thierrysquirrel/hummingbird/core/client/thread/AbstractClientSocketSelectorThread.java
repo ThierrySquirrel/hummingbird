@@ -1,5 +1,5 @@
 /**
- * Copyright 2024/8/8 ThierrySquirrel
+ * Copyright 2026/6/1 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@ import java.util.logging.Logger;
 /**
  * Classname: AbstractClientSocketSelectorThread
  * Description:
- * Date:2024/8/8
+ * Date:2026/6/1
  *
  * @author ThierrySquirrel
- * @since JDK21
+ * @since JDK25
  **/
 public abstract class AbstractClientSocketSelectorThread<T> implements Runnable {
     private static final Logger logger = Logger.getLogger(AbstractClientSocketSelectorThread.class.getName());
