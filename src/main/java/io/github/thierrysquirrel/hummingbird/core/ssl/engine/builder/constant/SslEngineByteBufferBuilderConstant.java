@@ -1,5 +1,5 @@
 /**
- * Copyright 2026/6/1 ThierrySquirrel
+ * Copyright 2026/9/1 ThierrySquirrel
  * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.constant;
+
+package io.github.thierrysquirrel.hummingbird.core.ssl.engine.builder.constant;
 
 /**
- * Classname: HttpHeaderKeyConstant
+ * Classname: SslEngineByteBufferBuilderConstant
  * Description:
- * Date:2026/6/1
+ * Date:2026/9/1
  *
  * @author ThierrySquirrel
  * @since JDK25
  **/
-public final class HttpHeaderKeyConstant {
-    private HttpHeaderKeyConstant() {
+public class SslEngineByteBufferBuilderConstant {
+    private SslEngineByteBufferBuilderConstant() {
     }
 
-    public static final String CONTENT_TYPE = "Content-Type";
-    public static final String CONTENT_LENGTH = "Content-Length";
-    public static final String CONNECTION = "Connection";
-    public static final String CONTENT_DISPOSITION = "Content-Disposition";
+    public static final int DEFAULT_CAPACITY = 65535;
 }

@@ -29,7 +29,7 @@ import io.github.thierrysquirrel.jellyfish.concurrency.map.hash.ConcurrencyHashM
  * @since JDK25
  **/
 public class ByteBufferFacadeChannelReadCache {
-    private static final ConcurrencyHashMap<String, ByteBufferFacade> CHANNEL_READ_CACHE = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
+    private static final ConcurrencyHashMap<String, ByteBufferFacade> CHANNEL_READ_CACHE = new ConcurrencyHashMap<>();
 
     private ByteBufferFacadeChannelReadCache() {
     }

@@ -34,7 +34,7 @@ import java.util.Objects;
  * @since JDK25
  **/
 public class ChannelHeartbeatDomainCache<T> {
-    private final ConcurrencyHashMap<String, ChannelHeartbeatDomain<T>> heartbeatDomainMap = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
+    private final ConcurrencyHashMap<String, ChannelHeartbeatDomain<T>> heartbeatDomainMap = new ConcurrencyHashMap<>();
     private final HummingbirdHandler<T> hummingbirdHandler;
     private final long readHeartbeatTime;
     private final long writeHeartbeatTime;
@@ -59,24 +59,26 @@ public class ChannelHeartbeatDomainCache<T> {
         long thisTime = System.currentTimeMillis();
         Map<String, ChannelHeartbeatDomain<T>> mapAll = heartbeatDomainMap.getAll();
         for (Map.Entry<String, ChannelHeartbeatDomain<T>> entry : mapAll.entrySet()) {
+            String entryKey = entry.getKey();
             ChannelHeartbeatDomain<T> channelHeartbeatDomain = entry.getValue();
             SocketChannelFacade<T> socketChannelFacade = channelHeartbeatDomain.getSocketChannelFacade();
 
             if (readHeartbeatTime > 0) {
                 long channelReadTime = channelHeartbeatDomain.getReadHeartbeatTime();
-                channelTimeout(thisTime, channelReadTime, readHeartbeatTime, socketChannelFacade);
+                channelTimeout(thisTime, channelReadTime, readHeartbeatTime, socketChannelFacade, entryKey);
             }
             if (writeHeartbeatTime > 0) {
                 long channelWriteTime = channelHeartbeatDomain.getWriteHeartbeatTime();
-                channelTimeout(thisTime, channelWriteTime, writeHeartbeatTime, socketChannelFacade);
+                channelTimeout(thisTime, channelWriteTime, writeHeartbeatTime, socketChannelFacade, entryKey);
             }
         }
     }
 
-    private void channelTimeout(long thisTimeout, long channelHeartbeatTime, long heartbeatTime, SocketChannelFacade<T> socketChannelFacade) {
+    private void channelTimeout(long thisTimeout, long channelHeartbeatTime, long heartbeatTime, SocketChannelFacade<T> socketChannelFacade, String heartbeatDomainKey) {
         long beatTime = thisTimeout - channelHeartbeatTime;
         if (beatTime > heartbeatTime) {
             hummingbirdHandler.channelTimeout(socketChannelFacade);
+            remove(heartbeatDomainKey);
         }
     }
 

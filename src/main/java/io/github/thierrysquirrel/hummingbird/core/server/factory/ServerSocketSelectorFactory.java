@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: ServerSocketSelectorFactory
@@ -29,12 +31,21 @@ import java.nio.channels.ServerSocketChannel;
  * @since JDK25
  **/
 public class ServerSocketSelectorFactory {
+
+    private static final Logger logger = Logger.getLogger(ServerSocketSelectorFactory.class.getName());
+
     private ServerSocketSelectorFactory() {
     }
 
-    public static Selector registerAcceptSelector(ServerSocketChannel serverSocketChannel) throws IOException {
-        var selector = Selector.open();
-        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+    public static Selector registerAcceptSelector(ServerSocketChannel serverSocketChannel) {
+        Selector selector = null;
+        try {
+            selector = Selector.open();
+            serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+        } catch (IOException e) {
+            String logMsg = "registerAcceptSelector Error";
+            logger.log(Level.WARNING, logMsg, e);
+        }
         return selector;
     }
 }

@@ -43,14 +43,13 @@ public class ClientSocketChannelFactory {
             socketChannel = SocketChannel.open();
             socketChannel.configureBlocking(false);
             socketChannel.connect(inetSocketAddress);
-            return socketChannel;
         } catch (IOException e) {
             if (socketChannel != null) {
                 socketChannel.close();
             }
             String logMsg = "ClientSocketChannelFactory Error";
             logger.log(Level.WARNING, logMsg, e);
-            throw e;
         }
+        return socketChannel;
     }
 }

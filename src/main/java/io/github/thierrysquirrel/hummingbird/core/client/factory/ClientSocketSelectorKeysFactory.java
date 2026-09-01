@@ -46,7 +46,7 @@ public class ClientSocketSelectorKeysFactory {
         completeSocketChannelFacade(socketChannel, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache, socketChannelFacadeCompletableFuture);
     }
 
-    private static <T> void completeSocketChannelFacade(SocketChannel socketChannel, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) throws IOException {
+    private static <T> void completeSocketChannelFacade(SocketChannel socketChannel, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, CompletableFuture<SocketChannelFacade<T>> socketChannelFacadeCompletableFuture) {
         SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade(hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache, socketChannel);
         socketChannelFacadeCompletableFuture.complete(socketChannelFacade);
     }

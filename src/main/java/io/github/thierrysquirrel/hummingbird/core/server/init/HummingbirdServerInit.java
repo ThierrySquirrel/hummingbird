@@ -21,13 +21,17 @@ import io.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDec
 import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.domain.builder.HummingbirdDomainBuilder;
 import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
+import io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.server.HttpServerDecoder;
+import io.github.thierrysquirrel.hummingbird.core.extend.http.core.coder.server.HttpServerEncoder;
+import io.github.thierrysquirrel.hummingbird.core.extend.http.core.domain.HttpRequestContext;
 import io.github.thierrysquirrel.hummingbird.core.factory.SocketAddressFactory;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 import io.github.thierrysquirrel.hummingbird.core.server.factory.ServerSocketChannelFactory;
 import io.github.thierrysquirrel.hummingbird.core.server.factory.execution.ChannelHeartbeatExecution;
 import io.github.thierrysquirrel.hummingbird.core.server.init.factory.HummingbirdServerInitFactory;
+import io.github.thierrysquirrel.hummingbird.core.ssl.container.SslContainer;
 
-import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 
 /**
@@ -44,12 +48,27 @@ public class HummingbirdServerInit {
     }
 
     public static <T> void init(String url, long readHeartbeatTime, long writeHeartbeatTime,
-                                HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler) throws IOException {
+                                HummingbirdDecoder<T> hummingbirdDecoder, HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler) {
         ServerSocketChannel serverSocketChannel = ServerSocketChannelFactory.bind(SocketAddressFactory.getInetSocketAddress(url));
         ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache = new ChannelHeartbeatDomainCache<>(hummingbirdHandler, readHeartbeatTime, writeHeartbeatTime);
         ChannelHeartbeatExecution.channelHeartbeat(url, channelHeartbeatDomainCache);
         HummingbirdDecoderCache<T> hummingbirdDecoderCache = new HummingbirdDecoderCache<>();
         HummingbirdDomain<T> hummingbirdDomain = HummingbirdDomainBuilder.builderHummingbirdDomain(hummingbirdDecoder, hummingbirdEncoder, hummingbirdHandler, channelHeartbeatDomainCache, hummingbirdDecoderCache);
         HummingbirdServerInitFactory.init(url, serverSocketChannel, hummingbirdDomain);
+    }
+
+    public static void initHttp(String url, long readHeartbeatTime, long writeHeartbeatTime,
+                                HummingbirdHandler<HttpRequestContext> hummingbirdHandler) {
+        init(url, readHeartbeatTime, writeHeartbeatTime, new HttpServerDecoder(), new HttpServerEncoder(), hummingbirdHandler);
+    }
+
+    public static void initHttps(String url, long readHeartbeatTime, long writeHeartbeatTime,
+                                 HummingbirdHandler<HttpRequestContext> hummingbirdHandler, String resourcesFileName, String password) {
+
+        InetSocketAddress inetSocketAddress = SocketAddressFactory.getInetSocketAddress(url);
+        String ipAndPort = SocketAddressFactory.getIpAndPort(inetSocketAddress);
+        SslContainer.setHttpSslContext(ipAndPort, resourcesFileName, password);
+
+        init(url, readHeartbeatTime, writeHeartbeatTime, new HttpServerDecoder(), new HttpServerEncoder(), hummingbirdHandler);
     }
 }

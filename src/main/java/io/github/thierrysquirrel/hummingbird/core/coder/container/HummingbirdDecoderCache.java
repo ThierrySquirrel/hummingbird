@@ -29,7 +29,7 @@ import java.util.Objects;
  **/
 public class HummingbirdDecoderCache<T> {
 
-    private final ConcurrencyHashMap<String, T> messageDecoderCache = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
+    private final ConcurrencyHashMap<String, T> messageDecoderCache = new ConcurrencyHashMap<>();
 
     public void putMessageDecoderCache(String socketChannelString, T message) {
         T value = messageDecoderCache.get(socketChannelString);

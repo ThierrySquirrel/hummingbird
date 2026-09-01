@@ -23,7 +23,7 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Classname: SocketWriteStateContainer
  * Description:
- * Date:2024/6/1
+ * Date:2026/6/1
  *
  * @author ThierrySquirrel
  * @since JDK25
@@ -32,7 +32,7 @@ public class SocketWriteStateContainer {
     private SocketWriteStateContainer() {
     }
 
-    private static final ConcurrencyHashMap<String, ReentrantLock> SOCKET_WRITE_STATE = new ConcurrencyHashMap<>(Runtime.getRuntime().availableProcessors() * 2);
+    private static final ConcurrencyHashMap<String, ReentrantLock> SOCKET_WRITE_STATE = new ConcurrencyHashMap<>();
 
     public static void writing(String socketChannelString) {
         ReentrantLock reentrantLock = SOCKET_WRITE_STATE.get(socketChannelString);

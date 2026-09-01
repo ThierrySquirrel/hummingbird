@@ -21,7 +21,10 @@ import io.github.thierrysquirrel.hummingbird.core.container.SocketWriteStateCont
 import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import io.github.thierrysquirrel.hummingbird.core.facade.cache.ByteBufferFacadeChannelReadCache;
 import io.github.thierrysquirrel.hummingbird.core.facade.cache.ByteBufferFacadeChannelWriteCache;
+import io.github.thierrysquirrel.hummingbird.core.facade.cache.SocketChannelFacadeCache;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
+import io.github.thierrysquirrel.hummingbird.core.ssl.container.SslContainer;
+import io.github.thierrysquirrel.hummingbird.core.ssl.engine.factory.SslEngineFactory;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -63,7 +66,11 @@ public class SocketChannelFacade<T> {
         while (true) {
             int write;
             try {
-                write = socketChannel.write(byteBufferFacade.getByteBuffer());
+                if (SslContainer.portOpenSsl(socketChannel)) {
+                    write = SslEngineFactory.sendSslMessage(socketChannel, byteBufferFacade);
+                } else {
+                    write = socketChannel.write(byteBufferFacade.getByteBuffer());
+                }
             } catch (IOException e) {
                 byteBufferFacade.clear();
                 throw e;
@@ -78,6 +85,7 @@ public class SocketChannelFacade<T> {
     }
 
     public void close() {
+        SslEngineFactory.closeSsl(socketChannel);
         String socketChannelString = socketChannel.toString();
         channelHeartbeatDomainCache.remove(socketChannelString);
         hummingbirdDecoderCache.remove(socketChannelString);
@@ -85,6 +93,7 @@ public class SocketChannelFacade<T> {
         ByteBufferFacadeChannelWriteCache.removeByteBufferFacade(socketChannelString);
         SocketWriteStateContainer.removeCache(socketChannelString);
         hummingbirdHandler.channelClose(remoteAddress, localAddress);
+        SocketChannelFacadeCache.deleteValue(socketChannelString);
         if (isOpen()) {
             try {
                 socketChannel.close();

@@ -32,10 +32,15 @@ public final class HttpHeaderValueConstant {
     public static final String FORM_DATA = "multipart/form-data";
     public static final String FORM_URLENCODED = "application/x-www-form-urlencoded";
     public static final String OCTET_STREAM = "application/octet-stream";
+    public static final String ATTACHMENT = "attachment; filename=\"%s\"";
 
     public static final String KEEP_ALIVE = "keep-alive";
 
     public static final String JPG = "image/jpeg";
     public static final String PNG = "image/png";
+
+    public static final String ICON = "image/x-icon";
+
+    public static final String TEXT_HTML_UTF = "text/html; charset=utf-8";
 
 }

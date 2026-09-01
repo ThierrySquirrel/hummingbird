@@ -19,10 +19,13 @@ import io.github.thierrysquirrel.hummingbird.core.coder.HummingbirdEncoder;
 import io.github.thierrysquirrel.hummingbird.core.coder.container.HummingbirdDecoderCache;
 import io.github.thierrysquirrel.hummingbird.core.domain.cache.ChannelHeartbeatDomainCache;
 import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
+import io.github.thierrysquirrel.hummingbird.core.facade.cache.SocketChannelFacadeCache;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: SocketChannelFacadeBuilder
@@ -33,18 +36,28 @@ import java.nio.channels.SocketChannel;
  * @since JDK25
  **/
 public class SocketChannelFacadeBuilder {
+
+    private static final Logger logger = Logger.getLogger(SocketChannelFacadeBuilder.class.getName());
+
     private SocketChannelFacadeBuilder() {
     }
 
-    public static <T> SocketChannelFacade<T> builderSocketChannelFacade(HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, SocketChannel socketChannel) throws IOException {
+    public static <T> SocketChannelFacade<T> builderSocketChannelFacade(HummingbirdEncoder<T> hummingbirdEncoder, HummingbirdHandler<T> hummingbirdHandler, ChannelHeartbeatDomainCache<T> channelHeartbeatDomainCache, HummingbirdDecoderCache<T> hummingbirdDecoderCache, SocketChannel socketChannel) {
         SocketChannelFacade<T> socketChannelFacade = new SocketChannelFacade<>();
         socketChannelFacade.setHummingbirdEncoder(hummingbirdEncoder);
         socketChannelFacade.setHummingbirdHandler(hummingbirdHandler);
         socketChannelFacade.setChannelHeartbeatDomainCache(channelHeartbeatDomainCache);
         socketChannelFacade.setHummingbirdDecoderCache(hummingbirdDecoderCache);
         socketChannelFacade.setSocketChannel(socketChannel);
-        socketChannelFacade.setRemoteAddress(socketChannel.getRemoteAddress());
-        socketChannelFacade.setLocalAddress(socketChannel.getLocalAddress());
+        try {
+            socketChannelFacade.setRemoteAddress(socketChannel.getRemoteAddress());
+            socketChannelFacade.setLocalAddress(socketChannel.getLocalAddress());
+        } catch (IOException e) {
+            String logMsg = "socketChannel getAddress Error";
+            logger.log(Level.WARNING, logMsg, e);
+        }
+
+        SocketChannelFacadeCache.put(socketChannel.toString(), socketChannelFacade);
         return socketChannelFacade;
     }
 }

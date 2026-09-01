@@ -37,7 +37,7 @@ public class ServerSocketChannelFactory {
     private ServerSocketChannelFactory() {
     }
 
-    public static ServerSocketChannel bind(InetSocketAddress inetSocketAddress) throws IOException {
+    public static ServerSocketChannel bind(InetSocketAddress inetSocketAddress) {
         ServerSocketChannel serverSocketChannel = null;
         try {
             serverSocketChannel = ServerSocketChannel.open();
@@ -47,11 +47,20 @@ public class ServerSocketChannelFactory {
         } catch (IOException e) {
             String logMsg = "bind Error";
             logger.log(Level.WARNING, logMsg, e);
-            if (serverSocketChannel != null) {
-                serverSocketChannel.close();
-            }
-            throw e;
+            channelClose(serverSocketChannel);
+            return null;
         }
 
+    }
+
+    private static void channelClose(ServerSocketChannel serverSocketChannel) {
+        if (serverSocketChannel != null) {
+            try {
+                serverSocketChannel.close();
+            } catch (IOException e) {
+                String logMsg = "close Error";
+                logger.log(Level.WARNING, logMsg, e);
+            }
+        }
     }
 }

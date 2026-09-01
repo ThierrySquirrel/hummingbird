@@ -27,7 +27,7 @@ public final class ByteBufferFacadeConstant {
     private ByteBufferFacadeConstant() {
     }
 
-    public static final int INIT_SIZE = 65536;
+    public static final int INIT_SIZE = 65535;
     public static final double EXPANSION_THRESHOLD = 0.8;
     public static final int EXPANSION_SIZE = 2;
     public static final int MAX_SIZE = 1073741824;

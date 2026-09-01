@@ -19,6 +19,8 @@ import io.github.thierrysquirrel.hummingbird.core.factory.constant.SocketSelecto
 
 import java.io.IOException;
 import java.nio.channels.Selector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: SocketSelectorFactory
@@ -29,11 +31,20 @@ import java.nio.channels.Selector;
  * @since JDK25
  **/
 public class SocketSelectorFactory {
+
+    private static final Logger logger = Logger.getLogger(SocketSelectorFactory.class.getName());
+
     private SocketSelectorFactory() {
     }
 
-    public static int select(Selector selector) throws IOException {
-        return selector.select(SocketSelectorFactoryConstant.SELECT);
+    public static int select(Selector selector) {
+        try {
+            return selector.select(SocketSelectorFactoryConstant.SELECT);
+        } catch (IOException e) {
+            String logMsg = "select Error";
+            logger.log(Level.WARNING, logMsg, e);
+        }
+        return -1;
     }
 
 }

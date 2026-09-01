@@ -28,9 +28,7 @@ import io.github.thierrysquirrel.hummingbird.core.facade.SocketChannelFacade;
 import io.github.thierrysquirrel.hummingbird.core.facade.builder.ByteBufferFacadeBuilder;
 
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Classname: HttpDecoderFactory
@@ -114,6 +112,39 @@ public class HttpDecoderFactory {
         httpRequestContext.setHttpHeader(readHttpHeader);
         return httpRequestContext;
     }
+
+    public static String readBoundary(ByteBufferFacade byteBufferFacade, String boundary) {
+
+        LinkedList<Byte> boundaryBytesList = new LinkedList<>();
+        byte[] boundaryBytes = boundary.getBytes();
+        int boundaryBytesLength = boundaryBytes.length;
+
+        for (byte boundaryByte : boundaryBytes) {
+            boundaryBytesList.add(boundaryByte);
+        }
+
+        LinkedList<Byte> findBoundaryBytesList = new LinkedList<>();
+
+        for (int i = 0; i < boundaryBytesLength; i++) {
+            findBoundaryBytesList.add(byteBufferFacade.getByte());
+        }
+
+        boolean find = boundaryBytesList.equals(findBoundaryBytesList);
+        if (find) {
+            return boundary;
+        }
+
+        while (byteBufferFacade.readComplete()) {
+            findBoundaryBytesList.addLast(byteBufferFacade.getByte());
+            findBoundaryBytesList.removeFirst();
+            find = boundaryBytesList.equals(findBoundaryBytesList);
+            if (find) {
+                return boundary;
+            }
+        }
+        return null;
+    }
+
 
     public static String readLine(ByteBufferFacade byteBufferFacade) {
         ByteBufferFacade readData = ByteBufferFacadeBuilder.builderByteBufferFacade();

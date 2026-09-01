@@ -132,17 +132,18 @@ public class HttpServerBodyDecoderFactory {
         skipBlankLines(byteBufferFacade);
         byteBufferFacade.make();
         int length = byteBufferFacade.length();
+        int beginBoundaryLength = beginBoundary.getBytes().length;
         int readLength = 0;
         boolean isRead = Boolean.TRUE;
         while (isRead) {
-            int beginLength = byteBufferFacade.length();
-            String readBoundary = HttpDecoderFactory.readLine(byteBufferFacade);
+            String readBoundary = HttpDecoderFactory.readBoundary(byteBufferFacade, beginBoundary);
             if (readBoundary == null) {
                 continue;
             }
             if (readBoundary.equals(beginBoundary) || readBoundary.equals(endBoundary)) {
-                readLength = length - beginLength;
+                int readEndLength = byteBufferFacade.length();
                 byteBufferFacade.reset();
+                readLength = length - readEndLength - beginBoundaryLength;
                 isRead = Boolean.FALSE;
             }
         }

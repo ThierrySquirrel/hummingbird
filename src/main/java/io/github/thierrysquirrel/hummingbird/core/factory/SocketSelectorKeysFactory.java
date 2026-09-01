@@ -23,6 +23,9 @@ import io.github.thierrysquirrel.hummingbird.core.facade.builder.SocketChannelFa
 import io.github.thierrysquirrel.hummingbird.core.facade.cache.ByteBufferFacadeChannelReadCache;
 import io.github.thierrysquirrel.hummingbird.core.handler.HummingbirdHandler;
 import io.github.thierrysquirrel.hummingbird.core.server.factory.constant.ServerSocketSelectorKeysFactoryConstant;
+import io.github.thierrysquirrel.hummingbird.core.ssl.container.SslContainer;
+import io.github.thierrysquirrel.hummingbird.core.ssl.engine.factory.SslEngineFactory;
+import io.github.thierrysquirrel.hummingbird.core.ssl.engine.factory.constant.SslEngineFactoryConstant;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -56,7 +59,7 @@ public class SocketSelectorKeysFactory {
         return selectionKey;
     }
 
-    public static <T> void isReadable(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain) throws IOException {
+    public static <T> void isReadable(SocketChannel socketChannel, HummingbirdDomain<T> hummingbirdDomain) {
         SocketChannelFacade<T> socketChannelFacade = SocketChannelFacadeBuilder.builderSocketChannelFacade(hummingbirdDomain.getHummingbirdEncoder(), hummingbirdDomain.getHummingbirdHandler(), hummingbirdDomain.getChannelHeartbeatDomainCache(), hummingbirdDomain.getHummingbirdDecoderCache(), socketChannel);
 
         int readOffsetInit = ServerSocketSelectorKeysFactoryConstant.READ_OFFSET_INIT;
@@ -66,7 +69,14 @@ public class SocketSelectorKeysFactory {
         while (readOffset == readOffsetInit || readOffset > 0) {
             try {
                 hummingbirdDomain.getChannelHeartbeatDomainCache().readHeartbeat(socketChannelFacade);
-                readOffset = socketChannel.read(byteBufferFacade.getByteBuffer());
+                if (SslContainer.portOpenSsl(socketChannel)) {
+                    readOffset = SslEngineFactory.sslIsReadable(socketChannel, byteBufferFacade);
+                    if (readOffset == SslEngineFactoryConstant.SSL_IS_READABLE_CLOSE) {
+                        break;
+                    }
+                } else {
+                    readOffset = socketChannel.read(byteBufferFacade.getByteBuffer());
+                }
                 boolean expansion = byteBufferFacade.isExpansion();
                 read(hummingbirdDomain.getHummingbirdDecoder(), hummingbirdDomain.getHummingbirdHandler(), socketChannelFacade, byteBufferFacade);
                 byteBufferFacade.tryExpansion(expansion);

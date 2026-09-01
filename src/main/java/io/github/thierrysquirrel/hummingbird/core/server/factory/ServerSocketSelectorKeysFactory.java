@@ -17,6 +17,8 @@ package io.github.thierrysquirrel.hummingbird.core.server.factory;
 
 import java.io.IOException;
 import java.nio.channels.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Classname: ServerSocketSelectorKeysFactory
@@ -27,14 +29,23 @@ import java.nio.channels.*;
  * @since JDK25
  **/
 public class ServerSocketSelectorKeysFactory {
+
+    private static final Logger logger = Logger.getLogger(ServerSocketSelectorKeysFactory.class.getName());
+
     private ServerSocketSelectorKeysFactory() {
     }
 
-    public static void isAcceptable(ServerSocketChannel serverSocketChannel, Selector selector) throws IOException {
-        var accept = serverSocketChannel.accept();
-        if (accept != null) {
-            accept.configureBlocking(Boolean.FALSE);
-            accept.register(selector, SelectionKey.OP_READ);
+    public static void isAcceptable(ServerSocketChannel serverSocketChannel, Selector selector) {
+
+        try {
+            var accept = serverSocketChannel.accept();
+            if (accept != null) {
+                accept.configureBlocking(Boolean.FALSE);
+                accept.register(selector, SelectionKey.OP_READ);
+            }
+        } catch (IOException e) {
+            String logMsg = "isAcceptable Error";
+            logger.log(Level.WARNING, logMsg, e);
         }
     }
 

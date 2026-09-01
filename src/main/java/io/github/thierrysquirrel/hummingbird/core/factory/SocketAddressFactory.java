@@ -38,4 +38,10 @@ public class SocketAddressFactory {
         return new InetSocketAddress(host, port);
     }
 
+    public static String getIpAndPort(InetSocketAddress inetSocketAddress) {
+        String ip = inetSocketAddress.getAddress().getHostAddress();
+        int port = inetSocketAddress.getPort();
+        return ip + port;
+    }
+
 }

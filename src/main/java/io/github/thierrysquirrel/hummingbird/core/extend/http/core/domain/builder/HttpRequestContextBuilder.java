@@ -80,6 +80,64 @@ public class HttpRequestContextBuilder {
         return builderJsonResponse(httpRequestContext, body);
     }
 
+    public static HttpRequestContext builderOctetStream(HttpRequestContext httpRequestContext, byte[] body) {
+        builderResponseBody(httpRequestContext, body);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.OCTET_STREAM);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderOctetStream(byte[] body) {
+        HttpRequestContext httpRequestContext = builderDefaultResponse();
+        return builderOctetStream(httpRequestContext, body);
+    }
+
+    public static HttpRequestContext builderFavicon(HttpRequestContext httpRequestContext, byte[] body) {
+        builderResponseBody(httpRequestContext, body);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.ICON);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderFavicon(byte[] body) {
+        HttpRequestContext httpRequestContext = builderDefaultResponse();
+        return builderFavicon(httpRequestContext, body);
+    }
+
+    public static HttpRequestContext builderTextHtmlUtf(HttpRequestContext httpRequestContext, byte[] body) {
+        builderResponseBody(httpRequestContext, body);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.TEXT_HTML_UTF);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderTextHtmlUtf(byte[] body) {
+        HttpRequestContext httpRequestContext = builderDefaultResponse();
+        return builderTextHtmlUtf(httpRequestContext, body);
+    }
+
+    public static HttpRequestContext builderJpeg(HttpRequestContext httpRequestContext, byte[] body) {
+        builderResponseBody(httpRequestContext, body);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.JPG);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderJpeg(byte[] body) {
+        HttpRequestContext httpRequestContext = builderDefaultResponse();
+        return builderJpeg(httpRequestContext, body);
+    }
+
+    public static HttpRequestContext builderDownload(HttpRequestContext httpRequestContext, byte[] body, String fileName) {
+        builderResponseBody(httpRequestContext, body);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_TYPE, HttpHeaderValueConstant.OCTET_STREAM);
+
+        String attachment = String.format(HttpHeaderValueConstant.ATTACHMENT, fileName);
+        httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_DISPOSITION, attachment);
+        return httpRequestContext;
+    }
+
+    public static HttpRequestContext builderDownload(byte[] body, String fileName) {
+        HttpRequestContext httpRequestContext = builderDefaultResponse();
+        return builderDownload(httpRequestContext, body, fileName);
+    }
+
     public static HttpRequestContext builderDefaultResponse() {
         HttpRequestContext httpRequestContext = new HttpRequestContext();
         builderDefaultHttpHeader(httpRequestContext);
@@ -91,12 +149,17 @@ public class HttpRequestContextBuilder {
 
     private static void builderResponseBody(HttpRequestContext httpRequestContext, String body) {
         byte[] bodyBytes = body.getBytes();
-        int bodyLength = bodyBytes.length;
+        builderResponseBody(httpRequestContext, bodyBytes);
+    }
+
+    private static void builderResponseBody(HttpRequestContext httpRequestContext, byte[] body) {
+        int bodyLength = body.length;
         httpRequestContext.getHttpHeader().put(HttpHeaderKeyConstant.CONTENT_LENGTH, bodyLength + "");
 
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bodyLength);
-        byteBuffer.put(bodyBytes);
+        byteBuffer.put(body);
         byteBuffer.flip();
+
         httpRequestContext.setHttpBody(byteBuffer);
     }
 

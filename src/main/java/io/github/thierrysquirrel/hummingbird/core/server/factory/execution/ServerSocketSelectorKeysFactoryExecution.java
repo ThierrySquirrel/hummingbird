@@ -19,7 +19,6 @@ import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.factory.SocketSelectorKeysFactory;
 import io.github.thierrysquirrel.hummingbird.core.server.factory.ServerSocketSelectorKeysFactory;
 
-import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -39,7 +38,7 @@ public class ServerSocketSelectorKeysFactoryExecution {
     private ServerSocketSelectorKeysFactoryExecution() {
     }
 
-    public static <T> void serverSocketSelectorKeys(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain, Selector selector) throws IOException {
+    public static <T> void serverSocketSelectorKeys(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain, Selector selector) {
         Iterator<SelectionKey> selectionKeyIterator = selector.selectedKeys().iterator();
         while (selectionKeyIterator.hasNext()) {
             SelectionKey selectionKey = SocketSelectorKeysFactory.getSelectionKey(selectionKeyIterator);

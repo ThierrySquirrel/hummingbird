@@ -19,7 +19,6 @@ import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 import io.github.thierrysquirrel.hummingbird.core.server.factory.execution.ServerSocketSelectorFactoryExecution;
 import io.github.thierrysquirrel.hummingbird.core.server.thread.AbstractServerSocketSelectorThread;
 
-import java.io.IOException;
 import java.nio.channels.ServerSocketChannel;
 
 /**
@@ -37,7 +36,7 @@ public class ServerSocketSelectorThreadExecute<T> extends AbstractServerSocketSe
     }
 
     @Override
-    protected void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) throws IOException {
+    protected void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) {
         ServerSocketSelectorFactoryExecution.serverSocketSelector(serverSocketChannel, hummingbirdDomain);
     }
 }

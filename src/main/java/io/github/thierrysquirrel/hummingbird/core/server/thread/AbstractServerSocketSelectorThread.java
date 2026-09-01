@@ -17,7 +17,6 @@ package io.github.thierrysquirrel.hummingbird.core.server.thread;
 
 import io.github.thierrysquirrel.hummingbird.core.domain.HummingbirdDomain;
 
-import java.io.IOException;
 import java.nio.channels.ServerSocketChannel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,9 +47,8 @@ public abstract class AbstractServerSocketSelectorThread<T> implements Runnable 
      *
      * @param serverSocketChannel serverSocketChannel
      * @param hummingbirdDomain   hummingbirdDomain
-     * @throws IOException IOException
      */
-    protected abstract void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain) throws IOException;
+    protected abstract void serverSocketSelector(ServerSocketChannel serverSocketChannel, HummingbirdDomain<T> hummingbirdDomain);
 
     @Override
     public void run() {
